@@ -1,4 +1,14 @@
+@import '../node_modules/normalize.css';
+@import '../src/assets/fonts/fonts.css';
+
 html {
   font-size: 62.5%;
+  font-family: Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+body #root {
+  min-width: 32rem;
+  min-height: 100vh;
+}

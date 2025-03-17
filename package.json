@@ -3,14 +3,23 @@
   "version": "1.0.0",
   "description": "react-app",
   "type": "module",
+  "engines": {
+    "node": "=v20.11.1"
+  },
   "scripts": {
-    "dev": "webpack serve --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
+    "dev": "node checkNodeVersion.js && webpack serve --config webpack.dev.js",
+    "build": "node checkNodeVersion.js && webpack --config webpack.prod.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier .",
+    "prettier:format": "prettier . --write",
+    "stylelint": "stylelint '**/*.{css,scss}'",
+    "stylelint:fix": "stylelint '**/*.{css,scss}' --fix",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "9.22.0",
+    "@reduxjs/toolkit": "2.6.1",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@typescript-eslint/eslint-plugin": "8.26.1",
@@ -23,12 +32,16 @@
     "eslint-plugin-react": "7.37.4",
     "globals": "16.0.0",
     "html-webpack-plugin": "5.6.3",
+    "husky": "9.1.7",
     "mini-css-extract-plugin": "2.9.2",
     "postcss-loader": "8.1.1",
+    "prettier": "3.5.3",
     "sass": "1.85.1",
     "sass-loader": "16.0.5",
     "speed-measure-webpack-plugin": "1.5.0",
     "style-loader": "4.0.0",
+    "stylelint": "16.16.0",
+    "stylelint-config-standard-scss": "14.0.0",
     "terser-webpack-plugin": "5.3.14",
     "ts-loader": "9.5.2",
     "typescript": "5.5.3",
@@ -40,8 +53,10 @@
     "webpack-merge": "6.0.1"
   },
   "dependencies": {
+    "@emotion/react": "11.14.0",
     "normalize.css": "8.0.1",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "react-redux": "9.2.0"
   }
 }
