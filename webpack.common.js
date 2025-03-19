@@ -3,7 +3,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { dirname, resolve } from 'node:path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import { fileURLToPath } from 'node:url';
 
@@ -13,7 +12,8 @@ export default new SpeedMeasurePlugin().wrap({
   entry: './src/index.tsx',
   output: {
     path: resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].[contenthash].bundle.js',
+    clean: true,
   },
   module: {
     rules: [
@@ -59,6 +59,5 @@ export default new SpeedMeasurePlugin().wrap({
     new MiniCssExtractPlugin(),
     new CaseSensitivePathsPlugin(),
     new CircularDependencyPlugin(),
-    new CleanWebpackPlugin(),
   ],
 });
