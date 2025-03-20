@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { filmApi } from './api/filmApi';
 
 export const store = configureStore({
-  reducer: {},
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([]),
+  reducer: {
+    [filmApi.reducerPath]: filmApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat([filmApi.middleware]),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
