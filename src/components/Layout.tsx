@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import Logo from '../assets/images/logo.png';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 export function Layout() {
   const navigate = useNavigate();
@@ -30,7 +31,16 @@ export function Layout() {
             boxSizing: 'border-box',
           }}
         >
-          <Link to="/" component={RouterLink}>
+          <Link
+            to="/"
+            component={RouterLink}
+            sx={{
+              display: 'flex',
+              textDecoration: 'none',
+              gap: 1,
+              '@media (max-width: 390px)': { display: 'none' },
+            }}
+          >
             <img
               css={css({
                 maxWidth: 60,
@@ -38,20 +48,42 @@ export function Layout() {
               src={Logo}
               alt="logo"
             />
+            <Typography
+              component="p"
+              color="textPrimary"
+              sx={{
+                fontSize: 30,
+                color: 'textPrimary',
+                '@media (max-width: 490px)': {
+                  display: 'none',
+                },
+              }}
+            >
+              Movies
+            </Typography>
           </Link>
-          <Typography
-            component="p"
-            color="textPrimary"
+          <Button
+            variant="outlined"
             sx={{
-              fontSize: 30,
-              color: 'textPrimary',
-              '@media (max-width: 420px)': {
-                display: 'none',
-              },
+              fontSize: 16,
+              textTransform: 'none',
+              minHeight: 40,
             }}
+            onClick={() => navigate('/search')}
           >
-            Movies
-          </Typography>
+            <SearchRoundedIcon fontSize="large" sx={{ color: 'orange' }} />
+            <Box
+              component="span"
+              sx={{
+                pl: 1,
+                '@media (max-width: 740px)': {
+                  display: 'none',
+                },
+              }}
+            >
+              Найти информацию о фильмах
+            </Box>
+          </Button>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button
               variant="outlined"
@@ -60,9 +92,7 @@ export function Layout() {
                 color: 'primary',
                 fontSize: 16,
               }}
-              onClick={() => {
-                navigate('/signin');
-              }}
+              onClick={() => navigate('/signin')}
             >
               Вход
             </Button>
@@ -101,7 +131,7 @@ export function Layout() {
       >
         <Box
           sx={{
-            padding: '90px 16px 0',
+            padding: '90px 16px 30px',
             maxWidth: 1200,
             margin: '0 auto',
             boxSizing: 'border-box',
