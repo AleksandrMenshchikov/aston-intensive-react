@@ -49,10 +49,11 @@ const fakeServer = {
     return makeAsyncOperation(() => currentUser._id) as Promise<string>;
   },
   async updateUser(id: string, payload: UserData) {
+    console.log(payload); //TODO Затычка для сейва. Убрать потом.
     const user = getUserByIdFromLS(id);
     if (!user) return { error: `Пользователь с id ${id} не найден` };
 
-    const newData = { ...user, ...payload };
+    // const newData = { ...user, ...payload };
 
     const rawUsers = localStorage.getItem(this.USER_COLLECTION_NAME);
     if (!rawUsers) return null;
@@ -60,7 +61,7 @@ const fakeServer = {
     const users = JSON.parse(rawUsers) as UsersCollectionEntry[];
     console.log(users);
 
-    const usersCollection = Object.values(users);
+    // const usersCollection = Object.values(users);
   },
   async getUserById(id: string): Promise<UserData | ErrorMessage> {
     const result = getUserByIdFromLS(id);
