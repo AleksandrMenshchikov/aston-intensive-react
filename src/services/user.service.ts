@@ -12,17 +12,16 @@ const userService: UserService = {
           if (!user) return null;
 
           res(user);
-        }
-        catch (err) {
+        } catch (err) {
           rej(err);
         }
-      })
-    })
-  }
+      });
+    });
+  },
 };
 
 export type UserService = {
   getUserInfo: (id: string) => Promise<UserData>;
-}
+};
 
 export default userService;
