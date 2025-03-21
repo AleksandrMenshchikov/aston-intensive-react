@@ -1,3 +1,3 @@
 export default function generateUniqId(): string {
-  return `${Date.now() - Number(Math.random().toString(36))}`;
+  return `${Date.now() + Math.random().toString(36)}`;
 }
