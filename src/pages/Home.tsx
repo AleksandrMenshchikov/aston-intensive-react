@@ -1,22 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useGetRandomFilmsQuery } from '../redux/api/filmApi';
 import { Alert, Box, CircularProgress, css, Typography } from '@mui/material';
 import ImageNotFound from '../assets/images/imageNotFound.jpg';
-
-function Wrapper({ children }: { children: ReactNode }) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 'calc(100vh - 180px)',
-      }}
-    >
-      {children}
-    </Box>
-  );
-}
+import { Wrapper } from '../components/Wrapper';
 
 export function Home() {
   const { data, error, isLoading } = useGetRandomFilmsQuery();
