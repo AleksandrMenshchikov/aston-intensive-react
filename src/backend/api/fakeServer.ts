@@ -20,17 +20,21 @@ const fakeServer = {
         const existingDataArray = Object.values(existingData) as UserData[];
         const isUserExists = existingDataArray.some((u) => u.email === email);
 
-        if (isUserExists) throw { error: `Пользователь ${email} уже существует` };
+        if (isUserExists)
+          throw { error: `Пользователь ${email} уже существует` };
 
-        const newUser = { [user._id]: user }
-        localStorage.setItem('users', JSON.stringify({ ...existingData, ...newUser }));
+        const newUser = { [user._id]: user };
+        localStorage.setItem(
+          'users',
+          JSON.stringify({ ...existingData, ...newUser })
+        );
         return user._id;
-      })) as string; 
+      })) as string;
 
       if (!result) return null;
       return result;
     } else {
-      return await makeAsyncOperation(() => null) as null;
+      return (await makeAsyncOperation(() => null)) as null;
     }
   },
   async singInWithPassword(
@@ -70,7 +74,7 @@ const fakeServer = {
     // console.log(users)
     const userIndex = users.findIndex((user) => user._id === id);
     // console.log('index is', userIndex);
-    
+
     users.splice(userIndex, 1, newData);
     console.log('users', users);
   },
@@ -83,7 +87,8 @@ const fakeServer = {
 
     return (await makeAsyncOperation(() => result)) as UserData;
   },
-  async getFilmList(url: string, options: HTTPRequestOptions) { //TODO Заменить на createApi или удалить
+  async getFilmList(url: string, options: HTTPRequestOptions) {
+    //TODO Заменить на createApi или удалить
     try {
       const response = await fetch(url, options);
       const textResult = await response.text();
