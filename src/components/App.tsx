@@ -19,7 +19,7 @@ export function App() {
     .then((result) => console.log(result))
     .catch((err) => console.error(err.error));
 
-  const id = '17425500605560.hhzr6s3la64';
+  const id = '17425530006510.382usyt9572';
   fakeServer
     .getUserById(id)
     .then((user) => fakeServer.updateUser(id, user as UserData));

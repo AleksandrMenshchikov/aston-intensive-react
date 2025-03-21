@@ -63,20 +63,22 @@ const fakeServer = {
     const user = getUserByIdFromLS(id);
     if (!user) return { error: `Пользователь с id ${id} не найден` };
 
-    const newData = { ...user, ...payload, email: 'new@mail.com' };
+    const newData = { ...user, ...payload, password: 'newPasssword' };
 
     const rawUsers = localStorage.getItem(this.USER_COLLECTION_NAME);
     if (!rawUsers) return null;
 
     const usersEntries = JSON.parse(rawUsers);
-    // console.log(usersEntries);
     const users = Object.values(usersEntries) as UserData[];
-    // console.log(users)
     const userIndex = users.findIndex((user) => user._id === id);
-    // console.log('index is', userIndex);
 
     users.splice(userIndex, 1, newData);
-    console.log('users', users);
+    console.log(users);
+    const newCollection = users.map((user) => ({ [user._id]: user }));
+    console.log(newCollection);
+    const newCollectionStrings = JSON.stringify({...newCollection});
+    console.log(newCollectionStrings);
+    localStorage.setItem(this.USER_COLLECTION_NAME, newCollectionStrings);
   },
   async getUserById(id: string): Promise<UserData | ErrorMessage> {
     const result = getUserByIdFromLS(id);
