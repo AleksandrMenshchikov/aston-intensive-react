@@ -76,7 +76,7 @@ const fakeServer = {
     console.log(users);
     const newCollection = users.map((user) => ({ [user._id]: user }));
     console.log(newCollection);
-    const newCollectionStrings = JSON.stringify({...newCollection});
+    const newCollectionStrings = JSON.stringify({ ...newCollection });
     console.log(newCollectionStrings);
     localStorage.setItem(this.USER_COLLECTION_NAME, newCollectionStrings);
   },
