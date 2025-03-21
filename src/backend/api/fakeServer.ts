@@ -15,16 +15,22 @@ const fakeServer = {
         _id: generateUniqId(),
       };
       const result = (await makeAsyncOperation(() => {
-        localStorage.setItem('users', JSON.stringify({ [user._id]: user }));
+        const existingRawData = localStorage.getItem(this.USER_COLLECTION_NAME);
+        const existingData = existingRawData ? JSON.parse(existingRawData) : {};
+        const existingDataArray = Object.values(existingData) as UserData[];
+        const isUserExists = existingDataArray.some((u) => u.email === email);
+
+        if (isUserExists) throw { error: `Пользователь ${email} уже существует` };
+
+        const newUser = { [user._id]: user }
+        localStorage.setItem('users', JSON.stringify({ ...existingData, ...newUser }));
         return user._id;
-      })) as string;
+      })) as string; 
 
       if (!result) return null;
       return result;
     } else {
-      return new Promise((res) => {
-        setTimeout(() => res(null));
-      });
+      return await makeAsyncOperation(() => null) as null;
     }
   },
   async singInWithPassword(
@@ -49,19 +55,24 @@ const fakeServer = {
     return makeAsyncOperation(() => currentUser._id) as Promise<string>;
   },
   async updateUser(id: string, payload: UserData) {
-    console.log(payload); //TODO Затычка для сейва. Убрать потом.
+    console.log('payload', payload); //TODO Затычка для сейва. Убрать потом.
     const user = getUserByIdFromLS(id);
     if (!user) return { error: `Пользователь с id ${id} не найден` };
 
-    // const newData = { ...user, ...payload };
+    const newData = { ...user, ...payload, email: 'new@mail.com' };
 
     const rawUsers = localStorage.getItem(this.USER_COLLECTION_NAME);
     if (!rawUsers) return null;
 
-    const users = JSON.parse(rawUsers) as UsersCollectionEntry[];
-    console.log(users);
-
-    // const usersCollection = Object.values(users);
+    const usersEntries = JSON.parse(rawUsers);
+    // console.log(usersEntries);
+    const users = Object.values(usersEntries) as UserData[];
+    // console.log(users)
+    const userIndex = users.findIndex((user) => user._id === id);
+    // console.log('index is', userIndex);
+    
+    users.splice(userIndex, 1, newData);
+    console.log('users', users);
   },
   async getUserById(id: string): Promise<UserData | ErrorMessage> {
     const result = getUserByIdFromLS(id);
@@ -72,7 +83,7 @@ const fakeServer = {
 
     return (await makeAsyncOperation(() => result)) as UserData;
   },
-  async getFilmList(url: string, options: HTTPRequestOptions) {
+  async getFilmList(url: string, options: HTTPRequestOptions) { //TODO Заменить на createApi или удалить
     try {
       const response = await fetch(url, options);
       const textResult = await response.text();
@@ -95,11 +106,14 @@ export type ErrorMessage = {
 
 function getUserByIdFromLS(id: string) {
   const rawData = localStorage.getItem('users');
+  console.log(rawData);
   if (!rawData) return null;
 
-  const users = JSON.parse(rawData);
+  const usersEntries = JSON.parse(rawData);
+  console.log(usersEntries);
+  const users = Object.values(usersEntries) as UserData[];
 
-  const user = JSON.parse(users).find((u: UserData) => u._id === id);
+  const user = users.find((u) => u._id === id);
   if (!user) return null;
 
   return user;
@@ -112,6 +126,6 @@ export type HTTPRequestOptions = {
   };
 };
 
-type UsersCollectionEntry = {
-  _id: UserData;
-};
+// type UsersCollectionEntry = {
+//   _id: UserData;
+// };
