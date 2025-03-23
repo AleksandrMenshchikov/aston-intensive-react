@@ -8,18 +8,15 @@ export function NotFound() {
   return (
     <Box
       sx={{
-        minHeight: 'inherit',
+        textAlign: 'center',
+        flexGrow: 1,
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        padding: '0 16px',
+        justifyContent: 'center',
+        minHeight: 'calc(100vh - 180px)',
       }}
     >
-      <Box
-        sx={{
-          textAlign: 'center',
-        }}
-      >
+      <Box>
         <Typography component="p" fontSize={40}>
           404
         </Typography>

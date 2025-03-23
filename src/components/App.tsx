@@ -7,6 +7,7 @@ import { Page } from '../types/enums';
 
 const Signin = lazy(() => import('../pages/Signin'));
 const Signup = lazy(() => import('../pages/Signup'));
+const Search = lazy(() => import('../pages/Search'));
 
 export function App() {
   return (
@@ -15,8 +16,9 @@ export function App() {
         <Route index path={Page.Home} element={<Home />} />
         <Route path={Page.Signin} element={<Signin />} />
         <Route path={Page.Signup} element={<Signup />} />
+        <Route path={Page.Search} element={<Search />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
-      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
