@@ -1,19 +1,27 @@
 import React, { Suspense } from 'react';
-import { Link as RouterLink, Outlet, useNavigate } from 'react-router';
+import {
+  Link as RouterLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router';
 import {
   AppBar,
   Box,
   Button,
-  CircularProgress,
   css,
+  LinearProgress,
   Link,
   Typography,
 } from '@mui/material';
 import Logo from '../assets/images/logo.png';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { ErrorBoundary } from './ErrorBoundary';
+import { Page } from '../types/enums';
 
 export function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
@@ -68,20 +76,22 @@ export function Layout() {
               fontSize: 16,
               textTransform: 'none',
               minHeight: 40,
+              display:
+                location.pathname === Page.Search ? 'none' : 'inline-flex',
             }}
             onClick={() => navigate('/search')}
           >
-            <SearchRoundedIcon fontSize="large" sx={{ color: 'orange' }} />
+            <SearchRoundedIcon fontSize="medium" sx={{ color: 'orange' }} />
             <Box
               component="span"
               sx={{
                 pl: 1,
-                '@media (max-width: 740px)': {
+                '@media (max-width: 714px)': {
                   display: 'none',
                 },
               }}
             >
-              Найти информацию о фильмах
+              Фильмы, сериалы, персоны
             </Box>
           </Button>
           <Box sx={{ display: 'flex', gap: 1 }}>
@@ -112,35 +122,21 @@ export function Layout() {
           </Box>
         </Box>
       </AppBar>
-      <Suspense
-        fallback={
-          <Box
-            sx={{
-              maxWidth: 1200,
-              margin: '0 auto',
-              boxSizing: 'border-box',
-              minHeight: 'inherit',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        }
+      <Box
+        sx={{
+          padding: '90px 16px 30px',
+          maxWidth: 1200,
+          margin: '0 auto',
+          boxSizing: 'border-box',
+          minHeight: 'inherit',
+        }}
       >
-        <Box
-          sx={{
-            padding: '90px 16px 30px',
-            maxWidth: 1200,
-            margin: '0 auto',
-            boxSizing: 'border-box',
-            minHeight: 'inherit',
-          }}
-        >
-          <Outlet />
-        </Box>
-      </Suspense>
+        <Suspense fallback={<LinearProgress sx={{ width: '100%' }} />}>
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </Suspense>
+      </Box>
     </>
   );
 }
