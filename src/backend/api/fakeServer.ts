@@ -6,8 +6,10 @@ const fakeServer = {
   USER_COLLECTION_NAME: 'users',
 
   async signUp(email: string, password: string): Promise<UserId> {
-    const methodError = 'При попытке зарегистрировать пользователя произошла ошибка: ';
-    if (!email.trim() || !password.trim()) throw new Error(methodError + 'Некоторые поля пустые');
+    const methodError =
+      'При попытке зарегистрировать пользователя произошла ошибка: ';
+    if (!email.trim() || !password.trim())
+      throw new Error(methodError + 'Некоторые поля пустые');
 
     const newUser: User = {
       email,
@@ -20,10 +22,14 @@ const fakeServer = {
     const userCollection: User[] = rawData ? JSON.parse(rawData) : [];
     const isUserExists = userCollection.some((u) => u.email === email);
 
-    if (isUserExists) throw new Error(methodError + `Пользователь ${email} уже существует`);
+    if (isUserExists)
+      throw new Error(methodError + `Пользователь ${email} уже существует`);
 
     userCollection.push(newUser);
-    localStorage.setItem(this.USER_COLLECTION_NAME, JSON.stringify(userCollection));
+    localStorage.setItem(
+      this.USER_COLLECTION_NAME,
+      JSON.stringify(userCollection)
+    );
 
     return newUser._id;
   },
@@ -36,26 +42,35 @@ const fakeServer = {
 
     const userCollection: User[] = JSON.parse(lookupResults);
     const currentUser = userCollection.find((user) => user.email === email);
-    if (!currentUser || currentUser.password !== password) throw credentialsError;
+    if (!currentUser || currentUser.password !== password)
+      throw credentialsError;
 
     return currentUser._id;
   },
-  async updateUser<UserPayload extends Partial<User>>(id: string, payload: UserPayload) {
+  async updateUser<UserPayload extends Partial<User>>(
+    id: string,
+    payload: UserPayload
+  ) {
     const methodError = 'При попытке обновить пользователя произошла ошибка: ';
     const user = getUserByIdFromLS(id);
 
-    if (!user) throw new Error(methodError + `Пользователь с id ${id} не найден`);
+    if (!user)
+      throw new Error(methodError + `Пользователь с id ${id} не найден`);
 
     const updatedUser = { ...user, ...payload };
 
     const rawData = localStorage.getItem(this.USER_COLLECTION_NAME);
-    if (!rawData) throw new Error(methodError + 'Ни один пользователь не найден');
+    if (!rawData)
+      throw new Error(methodError + 'Ни один пользователь не найден');
 
     const userCollection: User[] = JSON.parse(rawData);
     const userIndex = userCollection.findIndex((user) => user._id === id);
 
     userCollection.splice(userIndex, 1, updatedUser);
-    localStorage.setItem(this.USER_COLLECTION_NAME, JSON.stringify([...userCollection]));
+    localStorage.setItem(
+      this.USER_COLLECTION_NAME,
+      JSON.stringify([...userCollection])
+    );
 
     return payload;
   },
@@ -65,7 +80,8 @@ const fakeServer = {
 
     return result;
   },
-  async getFilmList(url: string, options: HTTPRequestOptions) { //TODO Заменить на createApi или удалить
+  async getFilmList(url: string, options: HTTPRequestOptions) {
+    //TODO Заменить на createApi или удалить
     const response = await fetch(url, options);
     const result = JSON.parse(await response.text());
 
@@ -78,7 +94,7 @@ export default fakeServer;
 
 export type HTTPRequestOptions = {
   method: string;
-  headers: { [key: string]: string; };
+  headers: { [key: string]: string };
 };
 
 function getUserByIdFromLS(id: string) {
