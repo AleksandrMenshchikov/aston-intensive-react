@@ -1,138 +1,95 @@
-import { UserData } from './../../types/User';
+import { User, UserId } from './../../types/User';
 import generateUniqId from '../../utils/generateUniqId';
-import makeAsyncOperation from '../../utils/makeAsyncOperation';
 import { Film } from '../../types/Film';
 
 const fakeServer = {
   USER_COLLECTION_NAME: 'users',
 
-  async signUp(email: string, password: string): Promise<string | null> {
-    if (email.trim() && password.trim()) {
-      const user = {
-        email,
-        password,
-        favorites: [],
-        _id: generateUniqId(),
-      };
-      const result = (await makeAsyncOperation(() => {
-        const existingRawData = localStorage.getItem(this.USER_COLLECTION_NAME);
-        const existingData = existingRawData ? JSON.parse(existingRawData) : {};
-        const existingDataArray = Object.values(existingData) as UserData[];
-        const isUserExists = existingDataArray.some((u) => u.email === email);
+  async signUp(email: string, password: string): Promise<UserId> {
+    const methodError = 'При попытке зарегистрировать пользователя произошла ошибка: ';
+    if (!email.trim() || !password.trim()) throw new Error(methodError + 'Некоторые поля пустые');
 
-        if (isUserExists)
-          throw { error: `Пользователь ${email} уже существует` };
+    const newUser: User = {
+      email,
+      password,
+      favorites: [],
+      history: [],
+      _id: generateUniqId(),
+    };
+    const rawData = localStorage.getItem(this.USER_COLLECTION_NAME);
+    const userCollection: User[] = rawData ? JSON.parse(rawData) : [];
+    const isUserExists = userCollection.some((u) => u.email === email);
 
-        const newUser = { [user._id]: user };
-        localStorage.setItem(
-          'users',
-          JSON.stringify({ ...existingData, ...newUser })
-        );
-        return user._id;
-      })) as string;
+    if (isUserExists) throw new Error(methodError + `Пользователь ${email} уже существует`);
 
-      if (!result) return null;
-      return result;
-    } else {
-      return (await makeAsyncOperation(() => null)) as null;
-    }
+    userCollection.push(newUser);
+    localStorage.setItem(this.USER_COLLECTION_NAME, JSON.stringify(userCollection));
+
+    return newUser._id;
   },
-  async singInWithPassword(
-    email: string,
-    password: string
-  ): Promise<string | ErrorMessage> {
-    const credentialsError = { error: 'Неверный логин или пароль' };
-    if (!email.trim() || !password.trim())
-      return (await makeAsyncOperation(() => credentialsError)) as ErrorMessage;
+  async singInWithPassword(email: string, password: string): Promise<UserId> {
+    const credentialsError = 'Неверный логин или пароль';
+    if (!email.trim() || !password.trim()) throw new Error(credentialsError);
 
     const lookupResults = localStorage.getItem('users');
-    if (!lookupResults)
-      return (await makeAsyncOperation(() => credentialsError)) as ErrorMessage;
+    if (!lookupResults) throw new Error(credentialsError);
 
-    const users = JSON.parse(lookupResults);
-    const currentUser = Object.values(users as UserData[]).find(
-      (user: UserData) => user.email === email
-    );
-    if (!currentUser || currentUser.password !== password)
-      return (await makeAsyncOperation(() => credentialsError)) as ErrorMessage;
+    const userCollection: User[] = JSON.parse(lookupResults);
+    const currentUser = userCollection.find((user) => user.email === email);
+    if (!currentUser || currentUser.password !== password) throw credentialsError;
 
-    return makeAsyncOperation(() => currentUser._id) as Promise<string>;
+    return currentUser._id;
   },
-  async updateUser(id: string, payload: UserData) {
-    console.log('payload', payload); //TODO Затычка для сейва. Убрать потом.
+  async updateUser<UserPayload extends Partial<User>>(id: string, payload: UserPayload) {
+    const methodError = 'При попытке обновить пользователя произошла ошибка: ';
     const user = getUserByIdFromLS(id);
-    if (!user) return { error: `Пользователь с id ${id} не найден` };
 
-    const newData = { ...user, ...payload, password: 'newPasssword' };
+    if (!user) throw new Error(methodError + `Пользователь с id ${id} не найден`);
 
-    const rawUsers = localStorage.getItem(this.USER_COLLECTION_NAME);
-    if (!rawUsers) return null;
+    const updatedUser = { ...user, ...payload };
 
-    const usersEntries = JSON.parse(rawUsers);
-    const users = Object.values(usersEntries) as UserData[];
-    const userIndex = users.findIndex((user) => user._id === id);
+    const rawData = localStorage.getItem(this.USER_COLLECTION_NAME);
+    if (!rawData) throw new Error(methodError + 'Ни один пользователь не найден');
 
-    users.splice(userIndex, 1, newData);
-    console.log(users);
-    const newCollection = users.map((user) => ({ [user._id]: user }));
-    console.log(newCollection);
-    const newCollectionStrings = JSON.stringify({ ...newCollection });
-    console.log(newCollectionStrings);
-    localStorage.setItem(this.USER_COLLECTION_NAME, newCollectionStrings);
+    const userCollection: User[] = JSON.parse(rawData);
+    const userIndex = userCollection.findIndex((user) => user._id === id);
+
+    userCollection.splice(userIndex, 1, updatedUser);
+    localStorage.setItem(this.USER_COLLECTION_NAME, JSON.stringify([...userCollection]));
+
+    return payload;
   },
-  async getUserById(id: string): Promise<UserData | ErrorMessage> {
+  async getUserById(id: string): Promise<User> {
     const result = getUserByIdFromLS(id);
-    if (!result)
-      return (await makeAsyncOperation(() => ({
-        error: `Пользователь с id ${id} не найден`,
-      }))) as ErrorMessage;
+    if (!result) throw new Error(`Пользователь с id ${id} не найден`);
 
-    return (await makeAsyncOperation(() => result)) as UserData;
+    return result;
   },
-  async getFilmList(url: string, options: HTTPRequestOptions) {
-    //TODO Заменить на createApi или удалить
-    try {
-      const response = await fetch(url, options);
-      const textResult = await response.text();
-      const result = JSON.parse(textResult);
+  async getFilmList(url: string, options: HTTPRequestOptions) { //TODO Заменить на createApi или удалить
+    const response = await fetch(url, options);
+    const result = JSON.parse(await response.text());
 
-      if (!result.results) return null;
-      return result.results as Film[];
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+    if (!result.results) throw new Error('Список фильмов не получен с сервера');
+    return result.results as Film[];
   },
 };
 
 export default fakeServer;
 
-export type ErrorMessage = {
-  error: string;
+export type HTTPRequestOptions = {
+  method: string;
+  headers: { [key: string]: string; };
 };
 
 function getUserByIdFromLS(id: string) {
   const rawData = localStorage.getItem('users');
-  console.log(rawData);
   if (!rawData) return null;
 
   const usersEntries = JSON.parse(rawData);
-  console.log(usersEntries);
-  const users = Object.values(usersEntries) as UserData[];
+  const users = Object.values(usersEntries) as User[];
 
   const user = users.find((u) => u._id === id);
   if (!user) return null;
 
   return user;
 }
-
-export type HTTPRequestOptions = {
-  method: string;
-  headers: {
-    [key: string]: string;
-  };
-};
-
-// type UsersCollectionEntry = {
-//   _id: UserData;
-// };

@@ -41,3 +41,5 @@ export type FilmImage = {
     __typename: string;
   };
 };
+
+export type FilmId = Film['_id'];

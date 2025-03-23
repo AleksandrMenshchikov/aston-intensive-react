@@ -1,4 +1,4 @@
-import fakeServer, { ErrorMessage } from '../backend/api/fakeServer';
+import fakeServer from '../backend/api/fakeServer';
 
 const authService = {
   async signUp(email: string, password: string): Promise<string | null> {
@@ -7,7 +7,7 @@ const authService = {
   async signInWithPassword(
     email: string,
     password: string
-  ): Promise<string | ErrorMessage> {
+  ): Promise<string> {
     return fakeServer.singInWithPassword(email, password);
   },
 };
