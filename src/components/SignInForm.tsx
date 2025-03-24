@@ -52,9 +52,14 @@ export default function Signin() {
   };
 
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      style={{ display: 'flex', flexDirection: 'column', margin: '0 auto', width: '25%' }}
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '0 auto',
+        width: '25%',
+      }}
     >
       <TextField
         label="Имя пользователя"
@@ -80,7 +85,7 @@ export default function Signin() {
         type="submit"
         variant="contained"
         color="primary"
-        size='large'
+        size="large"
         style={{ marginTop: '10px' }}
         disabled={!formData.username || !formData.password}
       >
