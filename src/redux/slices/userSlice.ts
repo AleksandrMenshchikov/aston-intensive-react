@@ -71,7 +71,9 @@ export function signUp(payload: AuthPayload) {
   return async function (dispatch: Dispatch) {
     dispatch(authRequested());
     try {
-      const userId = await dispatch(userApi.endpoints.signUp.initiate(payload)).unwrap();
+      const userId = await dispatch(
+        userApi.endpoints.signUp.initiate(payload)
+      ).unwrap();
       if (userId) {
         tokenService.setAuth(userId);
         dispatch(authRequestSucceed(userId));
