@@ -15,7 +15,7 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: unknown) {
-    console.log(error);
+    console.log('errorBoundary', error);
   }
 
   render() {
