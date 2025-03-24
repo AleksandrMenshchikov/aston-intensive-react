@@ -62,5 +62,5 @@ export const {
   useSignUpMutation,
   useSignInMutation,
   useUpdateUserMutation,
-  useGetUserByIdQuery
+  useGetUserByIdQuery,
 } = userApi;

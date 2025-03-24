@@ -4,20 +4,21 @@ import userService from '../../services/user.service';
 import authService, { AuthPayload } from '../../services/auth.service';
 import tokenService from '../../services/token.service';
 import { RootState } from '../store';
+import { userApi } from '../api/userApi';
 
 const initialState = initState();
 const sliceConfig = {
   name: 'user',
   initialState,
   reducers: {
-    authRequested() { },
+    authRequested() {},
     authRequestSucceed(state: UserState, action: PayloadAction<string>) {
       state.isLogged = Boolean(action.payload);
     },
     authRequestFailed(state: UserState, action: PayloadAction<unknown>) {
       state.error = action.payload;
     },
-    userLoadRequested() { },
+    userLoadRequested() {},
     userLoadSucceed(state: UserState, action: PayloadAction<User>) {
       state.userData = action.payload;
       state.dataIsLoaded = Boolean(action.payload);
@@ -70,7 +71,7 @@ export function signUp(payload: AuthPayload) {
   return async function (dispatch: Dispatch) {
     dispatch(authRequested());
     try {
-      const userId = await authService.signUp(payload);
+      const userId = await dispatch(userApi.endpoints.signUp.initiate(payload)).unwrap();
       if (userId) {
         tokenService.setAuth(userId);
         dispatch(authRequestSucceed(userId));
