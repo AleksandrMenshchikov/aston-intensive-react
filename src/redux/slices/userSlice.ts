@@ -1,29 +1,23 @@
 import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
-import generateUniqId from '../../utils/generateUniqId';
-import { GlobalState } from '../../types/state';
+import { User, UserId } from '../../types/User';
 import userService from '../../services/user.service';
 import authService, { AuthPayload } from '../../services/auth.service';
 import tokenService from '../../services/token.service';
-
-const isAuthed = true; // Затычка
-function getUserId() {
-  return generateUniqId();
-} // Затычка
+import { RootState } from '../store';
 
 const initialState = initState();
 const sliceConfig = {
   name: 'user',
   initialState,
   reducers: {
-    authRequested() {},
+    authRequested() { },
     authRequestSucceed(state: UserState, action: PayloadAction<string>) {
       state.isLogged = Boolean(action.payload);
     },
     authRequestFailed(state: UserState, action: PayloadAction<unknown>) {
       state.error = action.payload;
     },
-    userLoadRequested() {},
+    userLoadRequested() { },
     userLoadSucceed(state: UserState, action: PayloadAction<User>) {
       state.userData = action.payload;
       state.dataIsLoaded = Boolean(action.payload);
@@ -57,15 +51,17 @@ const {
   userLogoutFailed,
 } = actions;
 
-export function loadUserData(id: string) {
-  //TODO аргумент здесь не уместен, в последствии нужно реализовать, чтобы "сервер" получал auth при запросах.
-  return async function dispatchRequest(dispatch: Dispatch) {
+export function loadUserData() {
+  return async function fetchUserData(dispatch: Dispatch) {
     dispatch(userLoadRequested());
-    try {
-      const user = await userService.getUserInfo(id);
-      if (user) dispatch(userLoadSucceed(user));
-    } catch (err) {
-      userLoadFailed(err);
+    const userId = tokenService.getAuth();
+    if (userId) {
+      try {
+        const user = await userService.getUserInfo(userId);
+        if (user) dispatch(userLoadSucceed(user));
+      } catch (err) {
+        userLoadFailed(err);
+      }
     }
   };
 }
@@ -102,46 +98,42 @@ export function signIn(payload: AuthPayload) {
     }
   };
 }
+export function setUserAuth(payload: UserId) {
+  return async function (dispatch: Dispatch) {
+    dispatch(authRequested());
+    dispatch(authRequestSucceed(payload));
+    tokenService.setAuth(payload);
+  };
+}
 export function logOut() {
   return (dispatch: Dispatch) => {
     try {
       dispatch(userLoggedOut());
-      tokenService.removeAuth();
+      tokenService.clearAuth();
     } catch (err) {
       dispatch(userLogoutFailed(err));
     }
   };
 }
 export function getUser() {
-  return function findUser({ user }: GlobalState): User | null {
+  return function findUser({ user }: RootState): User | null {
     return user.userData;
   };
 }
 export function getLoginStatus() {
-  return (s: GlobalState): boolean => s.user.isLogged;
+  return (s: RootState): boolean => s.user.isLogged;
 }
 export function getUserDataStatus() {
-  return (s: GlobalState): boolean => s.user.dataIsLoaded;
+  return (s: RootState): boolean => s.user.dataIsLoaded;
 }
 
 function initState() {
-  if (isAuthed) {
-    return {
-      auth: getUserId(),
-      userData: null,
-      isLogged: true,
-      dataIsLoaded: false,
-      error: null,
-    };
-  } else {
-    return {
-      auth: null,
-      userData: null,
-      isLogged: false,
-      dataIsLoaded: false,
-      error: null,
-    };
-  }
+  return {
+    userData: null,
+    isLogged: Boolean(tokenService.getAuth()),
+    dataIsLoaded: false,
+    error: null,
+  };
 }
 
 export default userReducer;
