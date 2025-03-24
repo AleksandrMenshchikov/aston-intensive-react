@@ -16,26 +16,26 @@ import { useSearchParams } from 'react-router';
 import { IFilmsRequest } from '../types/interfaces';
 
 export default function Search() {
-  const [trigger, { error, data, isFetching, reset }] = useLazyGetFilmsQuery();
-  const [state, setState] = useState<IFilmsRequest>({
+  const [getFilms, { error, data, isFetching, reset }] = useLazyGetFilmsQuery();
+  const [filmsRequest, setFilmsRequest] = useState<IFilmsRequest>({
     title: '',
     page: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [count, setCount] = useState(1);
+  const [paginationCount, setPaginationCount] = useState(1);
   const flag = useRef(false);
 
   useEffect(() => {
     if (data && data.page) {
-      setState({ ...state, page: data.page.toString() });
+      setFilmsRequest({ ...filmsRequest, page: data.page.toString() });
     }
 
     if (data && data.next) {
       const page = Number(new URLSearchParams(data.next).get('page'));
 
-      if (page > count) {
-        setCount(page);
+      if (page > paginationCount) {
+        setPaginationCount(page);
       }
     }
   }, [data]);
@@ -43,8 +43,8 @@ export default function Search() {
   useEffect(() => {
     if (!flag.current) {
       for (const entry of searchParams.entries()) {
-        if (entry[0] in state) {
-          setState((prev) => ({ ...prev, [entry[0]]: entry[1] }));
+        if (entry[0] in filmsRequest) {
+          setFilmsRequest((prev) => ({ ...prev, [entry[0]]: entry[1] }));
         }
       }
 
@@ -55,14 +55,14 @@ export default function Search() {
         setIsSubmitted(true);
       }
     } else {
-      for (const stateKey in state) {
+      for (const filmsRequestKey in filmsRequest) {
         setSearchParams((prev) => {
-          const value = state[stateKey as keyof IFilmsRequest];
+          const value = filmsRequest[filmsRequestKey as keyof IFilmsRequest];
 
           if (value) {
-            prev.set(stateKey, value.trim());
+            prev.set(filmsRequestKey, value.trim());
           } else {
-            prev.delete(stateKey);
+            prev.delete(filmsRequestKey);
           }
 
           return prev;
@@ -70,11 +70,11 @@ export default function Search() {
       }
 
       if (isSubmitted) {
-        trigger(state, true);
+        getFilms(filmsRequest, true);
         setIsSubmitted(false);
       }
     }
-  }, [state, isSubmitted]);
+  }, [filmsRequest, isSubmitted]);
 
   if (error) {
     console.log('error', error);
@@ -83,29 +83,33 @@ export default function Search() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (state.title) {
+    if (filmsRequest.title) {
       flag.current = true;
       setIsSubmitted(true);
     }
   }
 
   function handlePaginationChange(e: React.ChangeEvent<unknown>, page: number) {
-    setState({ ...state, page: page.toString() });
+    setFilmsRequest({ ...filmsRequest, page: page.toString() });
     flag.current = true;
     setIsSubmitted(true);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     reset();
-    setCount(1);
+    setPaginationCount(1);
     flag.current = true;
-    setState({ ...state, title: e.target.value.trimStart(), page: '' });
+    setFilmsRequest({
+      ...filmsRequest,
+      title: e.target.value.trimStart(),
+      page: '',
+    });
   }
 
   function handleButtonClick() {
     reset();
-    setCount(1);
-    setState({ ...state, title: '', page: '' });
+    setPaginationCount(1);
+    setFilmsRequest({ ...filmsRequest, title: '', page: '' });
   }
 
   return (
@@ -121,7 +125,7 @@ export default function Search() {
       >
         <TextField
           disabled={isFetching}
-          value={state.title}
+          value={filmsRequest.title}
           placeholder="Введите название фильма или сериала"
           autoFocus
           type="text"
@@ -142,8 +146,8 @@ export default function Search() {
           variant="text"
           sx={{
             marginLeft: -12,
-            opacity: state.title.length > 0 ? 1 : 0,
-            pointerEvents: state.title.length > 0 ? 'auto' : 'none',
+            opacity: filmsRequest.title.length > 0 ? 1 : 0,
+            pointerEvents: filmsRequest.title.length > 0 ? 'auto' : 'none',
             minWidth: 48,
             transition: 'opacity 0.1s',
           }}
@@ -232,13 +236,13 @@ export default function Search() {
           <Pagination
             onChange={handlePaginationChange}
             size="medium"
-            page={Number(state.page)}
+            page={Number(filmsRequest.page)}
             sx={{
               '& button': {
                 fontSize: 16,
               },
             }}
-            count={count}
+            count={paginationCount}
           />
         </Box>
       )}

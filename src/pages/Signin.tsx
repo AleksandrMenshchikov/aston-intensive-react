@@ -7,6 +7,5 @@ export default function Signin() {
       <h1>Signin</h1>;
       <SignInForm />
     </>
-  )
+  );
 }
-
