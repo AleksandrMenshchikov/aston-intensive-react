@@ -3,23 +3,12 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { selectUser, setInitialState } from '../redux/slices/userSlice';
-import { User } from '../types/User';
 
 export function LoggedIn() {
   const { isLoggedIn, email } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   function handleLogout() {
-    const users = localStorage.getItem('users');
-
-    if (users) {
-      const parsedUsers = JSON.parse(users);
-      const filteredUsers = parsedUsers.filter(
-        (user: User) => user.email !== email
-      );
-      localStorage.setItem('users', JSON.stringify(filteredUsers));
-    }
-
     dispatch(setInitialState());
   }
 
