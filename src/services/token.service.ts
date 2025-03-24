@@ -1,4 +1,4 @@
-import { UserId } from "../types/User";
+import { UserId } from '../types/User';
 
 const tokenService = {
   setAuth(id: UserId) {
@@ -10,7 +10,7 @@ const tokenService = {
   },
   removeAuth() {
     localStorage.setItem('auth', '');
-  }
-}
+  },
+};
 
 export default tokenService;

@@ -1,28 +1,29 @@
-import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "../../types/User";
-import generateUniqId from "../../utils/generateUniqId";
-import { GlobalState } from "../../types/state";
-import userService from "../../services/user.service";
-import authService, { AuthPayload } from "../../services/auth.service";
-import tokenService from "../../services/token.service";
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '../../types/User';
+import generateUniqId from '../../utils/generateUniqId';
+import { GlobalState } from '../../types/state';
+import userService from '../../services/user.service';
+import authService, { AuthPayload } from '../../services/auth.service';
+import tokenService from '../../services/token.service';
 
-
-const isAuthed = true // Затычка
-function getUserId() { return generateUniqId() } // Затычка
+const isAuthed = true; // Затычка
+function getUserId() {
+  return generateUniqId();
+} // Затычка
 
 const initialState = initState();
 const sliceConfig = {
   name: 'user',
   initialState,
   reducers: {
-    authRequested() { },
+    authRequested() {},
     authRequestSucceed(state: UserState, action: PayloadAction<string>) {
       state.isLogged = Boolean(action.payload);
     },
     authRequestFailed(state: UserState, action: PayloadAction<unknown>) {
       state.error = action.payload;
     },
-    userLoadRequested() { },
+    userLoadRequested() {},
     userLoadSucceed(state: UserState, action: PayloadAction<User>) {
       state.userData = action.payload;
       state.dataIsLoaded = Boolean(action.payload);
@@ -39,8 +40,8 @@ const sliceConfig = {
     },
     userLogoutFailed(state: UserState, action: PayloadAction<unknown>) {
       state.error = action.payload;
-    }
-  }
+    },
+  },
 };
 
 const userSlice = createSlice(sliceConfig);
@@ -56,7 +57,8 @@ const {
   userLogoutFailed,
 } = actions;
 
-export function loadUserData(id: string) { //TODO аргумент здесь не уместен, в последствии нужно реализовать, чтобы "сервер" получал auth при запросах.
+export function loadUserData(id: string) {
+  //TODO аргумент здесь не уместен, в последствии нужно реализовать, чтобы "сервер" получал auth при запросах.
   return async function dispatchRequest(dispatch: Dispatch) {
     dispatch(userLoadRequested());
     try {
@@ -115,8 +117,12 @@ export function getUser() {
     return user.userData;
   };
 }
-export function getLoginStatus() { return (s: GlobalState): boolean => s.user.isLogged; }
-export function getUserDataStatus() { return (s: GlobalState): boolean => s.user.dataIsLoaded; }
+export function getLoginStatus() {
+  return (s: GlobalState): boolean => s.user.isLogged;
+}
+export function getUserDataStatus() {
+  return (s: GlobalState): boolean => s.user.dataIsLoaded;
+}
 
 function initState() {
   if (isAuthed) {
@@ -141,10 +147,10 @@ function initState() {
 export default userReducer;
 
 export type UserState = {
-  userData: User | null,
-  isLogged: boolean,
-  dataIsLoaded: boolean,
-  error: unknown,
+  userData: User | null;
+  isLogged: boolean;
+  dataIsLoaded: boolean;
+  error: unknown;
 };
 
-type ErrorMessage = { message: string }
+type ErrorMessage = { message: string };

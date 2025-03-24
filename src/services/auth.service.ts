@@ -12,4 +12,4 @@ const authService = {
 
 export default authService;
 
-export type AuthPayload = { email: string, password: string };
+export type AuthPayload = { email: string; password: string };
