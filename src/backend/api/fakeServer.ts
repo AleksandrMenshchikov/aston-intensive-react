@@ -93,7 +93,7 @@ const fakeServer: FakeServer = {
 export default fakeServer;
 
 export type FakeServer = {
-  USER_COLLECTION_NAME: 'users',
+  USER_COLLECTION_NAME: 'users';
   signUp(email: string, password: string): Promise<UserId>;
   singInWithPassword(email: string, password: string): Promise<UserId>;
   updateUser<UserPayload extends Partial<User>>(
