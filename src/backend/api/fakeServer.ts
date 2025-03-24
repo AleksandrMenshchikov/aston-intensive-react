@@ -92,6 +92,14 @@ const fakeServer = {
 
 export default fakeServer;
 
+export type FakeServer = {
+  signUp(email: string, password: string): Promise<UserId>,
+  singInWithPassword(email: string, password: string): Promise<UserId>,
+  updateUser<UserPayload extends Partial<User>>(id: string, payload: UserPayload): Promise<UserPayload>,
+  getUserById(id: string): Promise<User>,
+  getFilmList(url: string, options: HTTPRequestOptions): Promise<Film[]>,
+};
+
 export type HTTPRequestOptions = {
   method: string;
   headers: { [key: string]: string };
