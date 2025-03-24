@@ -1,19 +1,22 @@
+import { FunctionKeys } from './../../types/utils';
 import fakeServer, { FakeServer } from '../../backend/api/fakeServer';
 
-export async function fakeServerQuery(
-  method: keyof FakeServer,
-  arg1: string,
-  arg2: string
-) {
+export async function fakeServerQuery<MethodName extends FunctionKeys<FakeServer>>({ methodName, methodArgs }: {
+  methodName: MethodName;
+  methodArgs: [...Parameters<FakeServer[MethodName]>]
+  }) {
   try {
-    if (typeof fakeServer[method] !== 'function') {
-      throw new Error(`Метод ${method} не найден`);
+    if (typeof fakeServer[methodName] !== 'function') {
+      throw new Error(`Метод ${methodName} не найден`);
     }
 
-    const result = await fakeServer.signUp(arg1, arg2);
+    const result = await (fakeServer[methodName] as
+      (...args: Parameters<FakeServer[MethodName]>) => ReturnType<FakeServer[MethodName]>)
+      (...methodArgs);
 
     return { data: result };
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error('FAKE SERVER QUERY ERROR:', error);
 
     return {
@@ -23,29 +26,4 @@ export async function fakeServerQuery(
       },
     };
   }
-}
-
-// export async function fakeServerQuery<MethodArgs extends keyof FakeServer>(
-//   method: keyof FakeServer,
-//   ...methodArgs: FakeServer[MethodArgs][]
-// ) {
-//   try {
-//     if (typeof fakeServer[method] !== 'function') {
-//       throw new Error(`Метод ${method} не найден`);
-//     }
-
-//     const result = await fakeServer[method](...methodArgs);
-
-//     return { data: result };
-//   }
-//   catch (error: unknown) {
-//     console.error('FAKE SERVER QUERY ERROR:', error);
-
-//     return {
-//       error: {
-//         status: 'CUSTOM_ERROR',
-//         message: error,
-//       },
-//     };
-//   }
-// };
+};

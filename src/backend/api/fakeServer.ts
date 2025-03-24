@@ -2,7 +2,7 @@ import { User, UserId } from './../../types/User';
 import generateUniqId from '../../utils/generateUniqId';
 import { Film } from '../../types/Film';
 
-const fakeServer = {
+const fakeServer: FakeServer = {
   USER_COLLECTION_NAME: 'users',
 
   async signUp(email: string, password: string): Promise<UserId> {
@@ -93,6 +93,7 @@ const fakeServer = {
 export default fakeServer;
 
 export type FakeServer = {
+  USER_COLLECTION_NAME: 'users',
   signUp(email: string, password: string): Promise<UserId>;
   singInWithPassword(email: string, password: string): Promise<UserId>;
   updateUser<UserPayload extends Partial<User>>(
