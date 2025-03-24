@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { fakeServerQuery } from '../queries/fakeServerQuery';
 
-
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fakeServerQuery,

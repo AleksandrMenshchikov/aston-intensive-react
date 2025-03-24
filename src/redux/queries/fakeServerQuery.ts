@@ -1,9 +1,9 @@
-import fakeServer, { FakeServer } from "../../backend/api/fakeServer";
+import fakeServer, { FakeServer } from '../../backend/api/fakeServer';
 
 export async function fakeServerQuery(
   method: keyof FakeServer,
   arg1: string,
-  arg2: string,
+  arg2: string
 ) {
   try {
     if (typeof fakeServer[method] !== 'function') {
@@ -13,8 +13,7 @@ export async function fakeServerQuery(
     const result = await fakeServer.signUp(arg1, arg2);
 
     return { data: result };
-  }
-  catch (error: unknown) {
+  } catch (error: unknown) {
     console.error('FAKE SERVER QUERY ERROR:', error);
 
     return {
@@ -24,8 +23,7 @@ export async function fakeServerQuery(
       },
     };
   }
-};
-
+}
 
 // export async function fakeServerQuery<MethodArgs extends keyof FakeServer>(
 //   method: keyof FakeServer,
