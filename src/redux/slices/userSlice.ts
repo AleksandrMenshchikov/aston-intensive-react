@@ -4,7 +4,6 @@ import userService from '../../services/user.service';
 import authService, { AuthPayload } from '../../services/auth.service';
 import tokenService from '../../services/token.service';
 import { RootState } from '../store';
-import { userApi } from '../api/userApi';
 
 const initialState = initState();
 const sliceConfig = {
@@ -71,9 +70,7 @@ export function signUp(payload: AuthPayload) {
   return async function (dispatch: Dispatch) {
     dispatch(authRequested());
     try {
-      const userId = await dispatch(
-        userApi.endpoints.signUp.initiate(payload)
-      ).unwrap();
+      const userId = await authService.signUp(payload);
       if (userId) {
         tokenService.setAuth(userId);
         dispatch(authRequestSucceed(userId));
@@ -139,7 +136,8 @@ function initState() {
   };
 }
 
-export default userReducer;
+// export default userReducer;
+console.log(userReducer);
 
 export type UserState = {
   userData: User | null;
