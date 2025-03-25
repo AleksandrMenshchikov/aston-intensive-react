@@ -1,4 +1,4 @@
-import { UserState } from '../redux/slices/userSlice';
+import { UserState } from '../redux/slices/user.slice';
 import { UserId } from './User';
 
 export type GlobalState = {

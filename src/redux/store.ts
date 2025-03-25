@@ -10,7 +10,7 @@ export const store = configureStore({
     user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([filmApi.middleware]),
+    getDefaultMiddleware().concat([filmApi.middleware, userApi.middleware]),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
