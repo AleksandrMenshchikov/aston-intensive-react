@@ -5,8 +5,7 @@ const tokenService = {
     localStorage.setItem('auth', id);
   },
   getAuth() {
-    const authValue = localStorage.getItem('auth');
-    if (authValue) return JSON.parse(authValue) as UserId;
+    return localStorage.getItem('auth') as UserId;
   },
   clearAuth() {
     localStorage.removeItem('auth');

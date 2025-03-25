@@ -1,5 +1,6 @@
 import { FunctionKeys } from './../../types/utils';
 import fakeServer, { FakeServer } from '../../backend/api/fakeServer';
+import handleError from '../../utils/handleError';
 
 export async function fakeServerQuery<
   MethodName extends FunctionKeys<FakeServer>,
@@ -14,7 +15,6 @@ export async function fakeServerQuery<
     if (typeof fakeServer[methodName] !== 'function') {
       throw new Error(`Метод ${methodName} не найден`);
     }
-
     const result = await (
       fakeServer[methodName] as (
         ...args: Parameters<FakeServer[MethodName]>
@@ -23,13 +23,7 @@ export async function fakeServerQuery<
 
     return { data: result };
   } catch (error: unknown) {
-    console.error('FAKE SERVER QUERY ERROR:', error);
-
-    return {
-      error: {
-        status: 'CUSTOM_ERROR',
-        message: error,
-      },
-    };
+    handleError(error);
+    return { error };
   }
 }
