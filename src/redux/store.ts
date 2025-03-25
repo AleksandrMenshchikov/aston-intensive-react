@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { filmApi } from './api/filmApi';
-import userReducer from './slices/userSlice';
+import userReducer from './slices/user.slice';
 import { userApi } from './api/userApi';
 
 export const store = configureStore({
