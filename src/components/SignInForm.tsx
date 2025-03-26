@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { Button, TextField } from '@mui/material';
+import useAppDispatch from '../hooks/useAppDispatch';
+import { signIn } from '../redux/slices/user.slice';
 
 interface SigninFormData {
   username: string;
@@ -13,6 +15,7 @@ export default function Signin() {
     password: '',
   });
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -30,16 +33,11 @@ export default function Signin() {
       setError('Пожалуйста, заполните все поля');
       return;
     }
-
+    const payload = { email: formData.username, password: formData.password };
     try {
       // Отправка данных на сервер
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
+      const response = (await dispatch(signIn(payload))).payload;
+      if (response) {
         // Успешная авторизация
         setError(null);
         // Здесь будет логика перенаправления

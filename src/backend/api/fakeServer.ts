@@ -1,11 +1,12 @@
 import { User, UserId } from './../../types/User';
 import generateUniqId from '../../utils/generateUniqId';
 import { Film } from '../../types/Film';
+import { AuthPayload } from '../../redux/api/userApi';
 
-const fakeServer = {
+const fakeServer: FakeServer = {
   USER_COLLECTION_NAME: 'users',
 
-  async signUp(email: string, password: string): Promise<UserId> {
+  async signUp({ email, password }: AuthPayload): Promise<UserId> {
     const methodError =
       'При попытке зарегистрировать пользователя произошла ошибка: ';
     if (!email.trim() || !password.trim())
@@ -33,7 +34,7 @@ const fakeServer = {
 
     return newUser._id;
   },
-  async singInWithPassword(email: string, password: string): Promise<UserId> {
+  async singInWithPassword({ email, password }: AuthPayload): Promise<UserId> {
     const credentialsError = 'Неверный логин или пароль';
     if (!email.trim() || !password.trim()) throw new Error(credentialsError);
 
@@ -47,17 +48,22 @@ const fakeServer = {
 
     return currentUser._id;
   },
-  async updateUser<UserPayload extends Partial<User>>(
-    id: string,
-    payload: UserPayload
-  ) {
+  async updateUser<UserPayload extends Partial<User>>({
+    id,
+    payload,
+  }: {
+    id: UserId;
+    payload: UserPayload;
+  }) {
     const methodError = 'При попытке обновить пользователя произошла ошибка: ';
     const user = getUserByIdFromLS(id);
 
     if (!user)
       throw new Error(methodError + `Пользователь с id ${id} не найден`);
-
+    console.log('payload', payload);
+    console.log('user', user);
     const updatedUser = { ...user, ...payload };
+    console.log('updatedUser', updatedUser);
 
     const rawData = localStorage.getItem(this.USER_COLLECTION_NAME);
     if (!rawData)
@@ -91,6 +97,21 @@ const fakeServer = {
 };
 
 export default fakeServer;
+
+export type FakeServer = {
+  USER_COLLECTION_NAME: 'users';
+  signUp(arg: AuthPayload): Promise<UserId>;
+  singInWithPassword(arg: AuthPayload): Promise<UserId>;
+  updateUser<UserPayload extends Partial<User>>({
+    id,
+    payload,
+  }: {
+    id: UserId;
+    payload: UserPayload;
+  }): Promise<UserPayload>;
+  getUserById(id: string): Promise<User>;
+  getFilmList(url: string, options: HTTPRequestOptions): Promise<Film[]>;
+};
 
 export type HTTPRequestOptions = {
   method: string;
