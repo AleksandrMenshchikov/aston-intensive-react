@@ -5,7 +5,6 @@ import {
   Button,
   TextField,
   FormHelperText,
-  CircularProgress,
 } from '@mui/material';
 
 interface SignUpFormValues {
@@ -168,12 +167,9 @@ export default function SignUpForm() {
           style={{ marginTop: '10px' }}
           sx={{ mt: 3 }}
           disabled={isLoading || Object.keys(errors).length > 0}
+          loading={isLoading}
         >
-          {isLoading ? (
-            <CircularProgress size={20} sx={{ mr: 1 }} />
-          ) : (
-            'Зарегистрироваться'
-          )}
+          Зарегистрироваться
         </Button>
       </form>
     </Box>
