@@ -40,7 +40,7 @@ export const updateUser = createAsyncThunk<Partial<User | null>, Partial<User>>(
   async (payload, thunkApi) => {
     const updatingUser = tokenService.getAuth();
     if (updatingUser) {
-      return await await thunkApi
+      return await thunkApi
         .dispatch(
           userApi.endpoints.updateUser.initiate([{ id: updatingUser, payload }])
         )
