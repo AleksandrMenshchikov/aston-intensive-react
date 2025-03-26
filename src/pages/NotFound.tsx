@@ -1,21 +1,14 @@
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { Container } from '../components/Container';
+import { Page } from '../types/enums';
 
 export function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        textAlign: 'center',
-        flexGrow: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 'calc(100vh - 180px)',
-      }}
-    >
+    <Container>
       <Box>
         <Typography component="p" fontSize={40}>
           404
@@ -29,13 +22,11 @@ export function NotFound() {
         <Button
           sx={{ marginTop: 1, fontSize: 16, textTransform: 'none' }}
           variant="outlined"
-          onClick={() => {
-            navigate('/', { replace: true });
-          }}
+          onClick={() => navigate(Page.Home, { replace: true })}
         >
           Перейти на главную страницу
         </Button>
       </Box>
-    </Box>
+    </Container>
   );
 }

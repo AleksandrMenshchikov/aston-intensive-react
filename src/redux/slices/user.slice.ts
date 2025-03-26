@@ -1,6 +1,6 @@
 import {
-  createSlice,
   createAsyncThunk,
+  createSlice,
   PayloadAction,
   SerializedError,
 } from '@reduxjs/toolkit';
@@ -35,6 +35,7 @@ export const loadUserData = createAsyncThunk<User, void>(
     }
   }
 );
+
 export const updateUser = createAsyncThunk<Partial<User | null>, Partial<User>>(
   sliceName + '/updateUser',
   async (payload, thunkApi) => {
@@ -97,7 +98,15 @@ export const logOut = createAsyncThunk<void, void>(
 const userSlice = createSlice({
   name: sliceName,
   initialState,
-  reducers: {},
+  reducers: {
+    setInitialState: (state) => {
+      state.userData = initialState.userData;
+      state.isLogged = initialState.isLogged;
+      state.isLoading = initialState.isLoading;
+      state.dataIsLoaded = initialState.dataIsLoaded;
+      state.error = initialState.error;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loadUserData.pending, setIsLoading)
@@ -112,6 +121,8 @@ const userSlice = createSlice({
       .addCase(logOut.fulfilled, clearUserData);
   },
 });
+
+export const { setInitialState } = userSlice.actions;
 
 const userReducer = userSlice.reducer;
 export default userReducer;
@@ -137,12 +148,15 @@ function setError(
 ) {
   state.error = action.payload;
 }
+
 function setAuth(state: WritableDraft<UserState>) {
   state.isLogged = true;
 }
+
 function setIsLoading(state: WritableDraft<UserState>) {
   state.isLoading = true;
 }
+
 function setUserData(
   state: WritableDraft<UserState>,
   action: PayloadAction<User | null>
@@ -151,15 +165,16 @@ function setUserData(
   state.dataIsLoaded = true;
   state.isLoading = false;
 }
+
 function setUpdatedData(
   state: WritableDraft<UserState>,
   action: PayloadAction<Partial<User | null>>
 ) {
   if (action.payload) {
-    const newData = { ...state.userData, ...action.payload } as User;
-    state.userData = newData;
+    state.userData = { ...state.userData, ...action.payload } as User;
   }
 }
+
 function clearUserData(state: WritableDraft<UserState>) {
   state.isLogged = false;
   state.userData = null;
