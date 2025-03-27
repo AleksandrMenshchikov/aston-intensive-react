@@ -27,6 +27,7 @@ export const loadUserData = createAsyncThunk<User, void>(
     if (!userId) return thunkAPI.rejectWithValue('Пользователь не авторизован');
     try {
       const payload = tokenService.getAuth();
+      // Этот и все остальные Thunk'и возвращают не то, что идет после return, а объект где целевой результат находится под ключем payload.
       return await thunkAPI
         .dispatch(userApi.endpoints.getUserById.initiate([payload]))
         .unwrap();
