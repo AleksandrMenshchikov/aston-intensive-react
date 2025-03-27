@@ -4,7 +4,7 @@ import {
   PayloadAction,
   SerializedError,
 } from '@reduxjs/toolkit';
-import { User, UserId } from '../../types/User';
+import { User } from '../../types/User';
 import tokenService from '../../services/token.service';
 import { RootState } from '../store';
 import { AuthPayload, userApi } from '../api/userApi';
@@ -29,6 +29,7 @@ export const loadUserData = createAsyncThunk<User, void>(
     if (!userId) return thunkAPI.rejectWithValue('Пользователь не авторизован');
     try {
       const payload = tokenService.getAuth();
+      // Этот и все остальные Thunk'и возвращают не то, что идет после return, а объект где целевой результат находится под ключем payload.
       return await thunkAPI
         .dispatch(userApi.endpoints.getUserById.initiate([payload]))
         .unwrap();
@@ -54,7 +55,7 @@ export const updateUser = createAsyncThunk<Partial<User | null>, Partial<User>>(
   }
 );
 
-export const signUp = createAsyncThunk<UserId, AuthPayload>(
+export const signUp = createAsyncThunk<boolean, AuthPayload>(
   sliceName + '/signUp',
   async (payload, thunkAPI) => {
     try {
@@ -63,14 +64,14 @@ export const signUp = createAsyncThunk<UserId, AuthPayload>(
         .unwrap();
       console.log(userId);
       tokenService.setAuth(userId);
-      return userId;
+      return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const signIn = createAsyncThunk<UserId, AuthPayload>(
+export const signIn = createAsyncThunk<boolean, AuthPayload>(
   sliceName + '/signIn',
   async (payload, thunkAPI) => {
     try {
@@ -79,7 +80,7 @@ export const signIn = createAsyncThunk<UserId, AuthPayload>(
         .unwrap();
       console.log(userId);
       tokenService.setAuth(userId);
-      return userId;
+      return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

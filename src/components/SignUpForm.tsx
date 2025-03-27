@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -6,21 +6,17 @@ import {
   TextField,
   FormHelperText,
 } from '@mui/material';
+import useAppDispatch from '../hooks/useAppDispatch';
+import { selectLoginStatus, signUp } from '../redux/slices/user.slice';
+import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
+import removeError from '../utils/removeErrors';
 
 interface SignUpFormValues {
   username: string;
   email: string;
   password: string;
 }
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-}
-
-const users: User[] = []; // Массив для хранения пользователей
 
 export default function SignUpForm() {
   const [formData, setFormValues] = useState<SignUpFormValues>({
@@ -30,12 +26,24 @@ export default function SignUpForm() {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const redirectToMainPage = () => {
+    navigate('/', { replace: true });
+  };
+  const dispatch = useAppDispatch();
+  const isLogged = useSelector(selectLoginStatus());
+  // Если залогинен то выгоняем на главную
+  useEffect(() => {
+    if (isLogged) redirectToMainPage();
+  }, [isLogged]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (Object.keys(errors).length)
+      setErrors((prev) => removeError(prev, name)); //Убираем ошибки при начале ввода
     const { name, value } = event.target;
     setFormValues((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value.trim(), //Не позволяем вводить пробелы
     }));
   };
 
@@ -70,108 +78,98 @@ export default function SignUpForm() {
       return;
     }
 
+    setIsLoading(true);
+    const payload = { ...formData };
+
     try {
-      setIsLoading(true);
-
-      // Проверка, существует ли пользователь с таким email
-      const existingUser = users.find((user) => user.email === formData.email);
-      if (existingUser) {
-        setErrors({ email: 'Пользователь с таким email уже существует' });
-        return;
-      }
-
-      // Создание нового пользователя
-      const newUser: User = {
-        id: Date.now(), // Используем timestamp как ID
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      };
-
-      // Добавление пользователя в массив
-      users.push(newUser);
-
-      // Очистка формы
-      setFormValues({ username: '', email: '', password: '' });
+      const result = await dispatch(signUp(payload));
       setErrors({});
 
-      console.log('Зарегистрированные пользователи:', users);
+      if (result.payload === true) {
+        alert('Вы успешно зарегистрированы');
+        setFormValues({ username: '', email: '', password: '' });
+        // Чистим форму только в случае успешной авторизации.
+        redirectToMainPage();
+      }
+      if (result.payload instanceof Error)
+        setErrors({ server: result.payload.message });
     } catch (error) {
       setErrors({ server: `Произошла ошибка ${error}` });
     } finally {
       setIsLoading(false);
     }
   };
-
-  return (
-    <Box
-      sx={{
-        width: '100%',
-        margin: 'auto',
-        padding: 3,
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          margin: '0 auto',
-          width: '25%',
+  // Рисуем только если пользователь не залогинен
+  if (!isLogged)
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          margin: 'auto',
+          padding: 3,
         }}
       >
-        <Typography variant="h5" gutterBottom>
-          Регистрация
-        </Typography>
-        <TextField
-          label="Имя пользователя"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          variant="outlined"
-          margin="normal"
-          error={!!errors.username}
-          helperText={errors.username}
-        />
-        <TextField
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          margin="normal"
-          error={!!errors.email}
-          helperText={errors.email}
-        />
-        <TextField
-          label="Пароль"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          variant="outlined"
-          margin="normal"
-          error={!!errors.password}
-          helperText={errors.password}
-        />
-
-        {errors.server && (
-          <FormHelperText error sx={{ mt: 2 }}>
-            {errors.server}
-          </FormHelperText>
-        )}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          size="large"
-          style={{ marginTop: '10px' }}
-          sx={{ mt: 3 }}
-          disabled={isLoading || Object.keys(errors).length > 0}
-          loading={isLoading}
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            margin: '0 auto',
+            width: '25%',
+          }}
         >
-          Зарегистрироваться
-        </Button>
-      </form>
-    </Box>
-  );
+          <Typography variant="h5" gutterBottom>
+            Регистрация
+          </Typography>
+          <TextField
+            label="Имя пользователя"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            error={!!errors.username}
+            helperText={errors.username}
+          />
+          <TextField
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            margin="normal"
+            error={!!errors.email}
+            helperText={errors.email}
+          />
+          <TextField
+            label="Пароль"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            error={!!errors.password}
+            helperText={errors.password}
+          />
+
+          {errors.server && (
+            <FormHelperText error sx={{ mt: 2 }}>
+              {errors.server}
+            </FormHelperText>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{ marginTop: '10px' }}
+            sx={{ mt: 3 }}
+            disabled={isLoading || Object.keys(errors).length > 0}
+            loading={isLoading}
+          >
+            Зарегистрироваться
+          </Button>
+        </form>
+      </Box>
+    );
 }

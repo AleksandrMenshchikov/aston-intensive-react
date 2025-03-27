@@ -1,94 +1,101 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import useAppDispatch from '../hooks/useAppDispatch';
-import { signIn } from '../redux/slices/user.slice';
-
-interface SigninFormData {
-  username: string;
-  password: string;
-}
+import { selectLoginStatus, signIn } from '../redux/slices/user.slice';
+import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
+import { AuthPayload } from '../redux/api/userApi';
 
 export default function Signin() {
-  const [formData, setFormData] = useState<SigninFormData>({
-    username: '',
+  // Заменил на существующий тип.
+  const [formData, setFormData] = useState<AuthPayload>({
+    email: '',
     password: '',
   });
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const redirectToMainPage = () => navigate('/', { replace: true });
+  const redirectBack = () => navigate(-1);
+  const isLogged = useSelector(selectLoginStatus());
+
+  useEffect(() => {
+    if (isLogged) redirectToMainPage();
+  }, [isLogged]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value.trim(),
     }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Проверка полей
-    if (!formData.username || !formData.password) {
+    if (!formData.email || !formData.password) {
       setError('Пожалуйста, заполните все поля');
       return;
     }
-    const payload = { email: formData.username, password: formData.password };
+    const payload = { ...formData };
     try {
-      // Отправка данных на сервер
-      const response = (await dispatch(signIn(payload))).payload;
-      if (response) {
-        // Успешная авторизация
+      const result = await dispatch(signIn(payload));
+      if (result.payload === true) {
         setError(null);
-        // Здесь будет логика перенаправления
-      } else {
-        setError('Неверные логин или пароль');
+        redirectBack();
+      } else if (result.payload instanceof Error) {
+        setError(result.payload.message);
       }
     } catch (error) {
       setError(`Произошла ошибка при авторизации: ${error}`);
     }
   };
 
-  return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '0 auto',
-        width: '25%',
-      }}
-    >
-      <TextField
-        label="Имя пользователя"
-        name="username"
-        value={formData.username}
-        onChange={handleChange}
-        variant="outlined"
-      />
-
-      <TextField
-        label="Пароль"
-        name="password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        variant="outlined"
-        margin="normal"
-      />
-
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        size="large"
-        style={{ marginTop: '10px' }}
-        disabled={!formData.username || !formData.password}
+  if (!isLogged)
+    return (
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          margin: '0 auto',
+          width: '25%',
+        }}
       >
-        Войти
-      </Button>
-    </form>
-  );
+        <TextField
+          label="Имя пользователя"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          variant="outlined"
+        />
+
+        <TextField
+          label="Пароль"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          variant="outlined"
+          margin="normal"
+        />
+
+        {error && (
+          <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>
+        )}
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          style={{ marginTop: '10px' }}
+          disabled={!formData.email || !formData.password}
+        >
+          Войти
+        </Button>
+      </form>
+    );
 }
