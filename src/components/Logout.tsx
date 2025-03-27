@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { logOut, selectLoginStatus } from '../redux/slices/user.slice';
 import useAppDispatch from '../hooks/useAppDispatch';
@@ -10,9 +10,15 @@ export default function Logout() {
   const navigate = useNavigate();
   const isFirstReneder = useRef(true);
 
-  useEffect(initiateLogout, []);
-
-  function initiateLogout() {
+  const confirmLogout = useCallback(() => {
+    const isConfirmed = confirm('Вы уверены, что хотите выйти?');
+    if (isConfirmed) {
+      dispatch(logOut()).then(() => navigate('/', { replace: true }));
+    } else {
+      navigate(-1);
+    }
+  }, [dispatch, navigate])
+  const initiateLogout = useCallback(() => {
     // в StrictMode рендер комонентов проиходит дважды в dev моде,
     // поэтому первый рендер мы пропускаем, чтобы не ломать логику условия.
     if (isFirstReneder.current) {
@@ -24,14 +30,9 @@ export default function Logout() {
         confirmLogout();
       }
     }
-  }
-  function confirmLogout() {
-    const isConfirmed = confirm('Вы уверены, что хотите выйти?');
-    if (isConfirmed) {
-      dispatch(logOut()).then(() => navigate('/', { replace: true }));
-    } else {
-      navigate(-1);
-    }
-  }
+  }, [confirmLogout, isLogged, navigate])
+
+  useEffect(initiateLogout, [initiateLogout]);
+
   return <div></div>;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import useAppDispatch from '../hooks/useAppDispatch';
@@ -16,13 +16,13 @@ export default function Signin() {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const redirectToMainPage = () => navigate('/', { replace: true });
+  const redirectToMainPage = useCallback(() => navigate('/', { replace: true }),[navigate]);
   const redirectBack = () => navigate(-1);
   const isLogged = useSelector(selectLoginStatus());
 
   useEffect(() => {
     if (isLogged) redirectToMainPage();
-  }, [isLogged]);
+  }, [isLogged, redirectToMainPage]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
