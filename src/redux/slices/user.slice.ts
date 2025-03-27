@@ -9,6 +9,8 @@ import tokenService from '../../services/token.service';
 import { RootState } from '../store';
 import { AuthPayload, userApi } from '../api/userApi';
 import { WritableDraft } from 'immer';
+import fakeServer from '../../backend/api/fakeServer';
+import { IHistoryRequest, IHistoryResponse } from '../../types/interfaces';
 
 const initialState: UserState = {
   userData: null,
@@ -95,6 +97,21 @@ export const logOut = createAsyncThunk<void, void>(
   }
 );
 
+export const saveHistory = createAsyncThunk<IHistoryResponse, IHistoryRequest>(
+  sliceName + '/saveHistory',
+  async (data) => {
+    return await fakeServer.saveHistory(data);
+  }
+);
+
+export const getUserHistoriesById = createAsyncThunk<string[], User['_id']>(
+  sliceName + '/getUserHistoriesById',
+  async (userId) => {
+    await new Promise((res) => setTimeout(res, 1000));
+    return await fakeServer.getUserHistoriesById(userId);
+  }
+);
+
 const userSlice = createSlice({
   name: sliceName,
   initialState,
@@ -118,7 +135,10 @@ const userSlice = createSlice({
       .addCase(signUp.rejected, setError)
       .addCase(signIn.fulfilled, setAuth)
       .addCase(signIn.rejected, setError)
-      .addCase(logOut.fulfilled, clearUserData);
+      .addCase(logOut.fulfilled, clearUserData)
+      .addCase(getUserHistoriesById.pending, setIsLoading)
+      .addCase(getUserHistoriesById.fulfilled, setHistories)
+      .addCase(getUserHistoriesById.rejected, setError);
   },
 });
 
@@ -132,6 +152,8 @@ export const selectLoginStatus = () => (state: RootState) =>
   state.user.isLogged;
 export const selectUserDataStatus = () => (state: RootState) =>
   state.user.dataIsLoaded;
+export const selectUserIsLoading = () => (state: RootState) =>
+  state.user.isLoading;
 
 export type UserState = {
   userData: User | null;
@@ -147,6 +169,7 @@ function setError(
   action: PayloadAction<unknown, string, any, SerializedError>
 ) {
   state.error = action.payload;
+  state.isLoading = false;
 }
 
 function setAuth(state: WritableDraft<UserState>) {
@@ -178,4 +201,15 @@ function setUpdatedData(
 function clearUserData(state: WritableDraft<UserState>) {
   state.isLogged = false;
   state.userData = null;
+}
+
+function setHistories(
+  state: WritableDraft<UserState>,
+  action: PayloadAction<string[]>
+) {
+  if (state.userData) {
+    state.userData.history = action.payload;
+  }
+
+  state.isLoading = false;
 }

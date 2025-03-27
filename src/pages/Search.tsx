@@ -12,8 +12,11 @@ import ImageNotFound from '../assets/images/imageNotFound.jpg';
 import { Card } from '../components/Card';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { useSearchParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 import { IFilmsRequest } from '../types/interfaces';
+import useAppDispatch from '../hooks/useAppDispatch';
+import { saveHistory, selectUser } from '../redux/slices/user.slice';
+import { useSelector } from 'react-redux';
 
 export default function Search() {
   const [getFilms, { error, data, isFetching, reset }] = useLazyGetFilmsQuery();
@@ -25,6 +28,9 @@ export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const isFirstRender = useRef(true);
   const paginationCount = useRef(1);
+  const dispatch = useAppDispatch();
+  const user = useSelector(selectUser());
+  const location = useLocation();
 
   if (data && data.next) {
     const page = Number(new URLSearchParams(data.next).get('page'));
@@ -80,6 +86,16 @@ export default function Search() {
     if (filmsRequest.title) {
       isFirstRender.current = false;
       setIsSubmitted(true);
+
+      if (user) {
+        dispatch(
+          saveHistory({
+            userId: user._id,
+            request: filmsRequest.title,
+            url: `${location.pathname}${location.search}`,
+          })
+        );
+      }
     }
   }
 
