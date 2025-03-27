@@ -4,9 +4,9 @@ export default function handleError(err: ExpectedError) {
     alert(err);
   } else if (err.message && typeof err.message === 'string') {
     alert(err.message);
-  }  else {
+  } else {
     alert('Произошла ошибка, вы можете увидеть её в консоле');
   }
 }
 
-export type ExpectedError = { message: string, reason: string };
+export type ExpectedError = { message: string; reason: string };

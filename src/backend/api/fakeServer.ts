@@ -23,8 +23,7 @@ const fakeServer: FakeServer = {
     const userCollection: User[] = rawData ? JSON.parse(rawData) : [];
     const isUserExists = userCollection.some((u) => u.email === email);
 
-    if (isUserExists)
-      throw new Error(`Пользователь ${email} уже существует`);
+    if (isUserExists) throw new Error(`Пользователь ${email} уже существует`);
 
     userCollection.push(newUser);
     localStorage.setItem(

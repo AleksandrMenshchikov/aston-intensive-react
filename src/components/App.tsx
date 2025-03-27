@@ -18,14 +18,23 @@ export function App() {
   const isLogged = useSelector(selectLoginStatus());
   const dispatch = useAppDispatch();
 
-  useEffect(() => { if (isLogged) dispatch(loadUserData()) }, [isLogged]);
+  useEffect(() => {
+    if (isLogged) dispatch(loadUserData());
+  }, [isLogged]);
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index path={Page.Home} element={<Home />} />
         <Route path={Page.Signin} element={<Signin />} />
         <Route path={Page.Signup} element={<Signup />} />
-        <Route path={Page.Search} element={<ProtectedRoute isAuthenticated={isLogged}><Search /></ProtectedRoute>} />
+        <Route
+          path={Page.Search}
+          element={
+            <ProtectedRoute isAuthenticated={isLogged}>
+              <Search />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
       </Route>
