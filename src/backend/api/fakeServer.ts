@@ -1,7 +1,8 @@
-import { User, UserId } from './../../types/User';
+import { User, UserId } from '../../types/User';
 import generateUniqId from '../../utils/generateUniqId';
 import { Film } from '../../types/Film';
 import { AuthPayload } from '../../redux/api/userApi';
+import { IHistoryRequest, IHistoryResponse } from '../../types/interfaces';
 
 const fakeServer: FakeServer = {
   USER_COLLECTION_NAME: 'users',
@@ -93,6 +94,26 @@ const fakeServer: FakeServer = {
     if (!result.results) throw new Error('Список фильмов не получен с сервера');
     return result.results as Film[];
   },
+  async saveHistory({ userId, ...data }) {
+    const user = await this.getUserById(userId);
+
+    if (user.history.length >= 10) {
+      user.history.pop();
+    }
+
+    const history = {
+      _id: generateUniqId(),
+      created_at: new Date().toLocaleString(),
+      ...data,
+    };
+    user.history.unshift(JSON.stringify(history));
+    await this.updateUser({ id: userId, payload: user });
+    return history;
+  },
+  async getUserHistoriesById(userId: string) {
+    const user = await this.getUserById(userId);
+    return user.history;
+  },
 };
 
 export default fakeServer;
@@ -110,6 +131,8 @@ export type FakeServer = {
   }): Promise<UserPayload>;
   getUserById(id: string): Promise<User>;
   getFilmList(url: string, options: HTTPRequestOptions): Promise<Film[]>;
+  saveHistory(data: IHistoryRequest): Promise<IHistoryResponse>;
+  getUserHistoriesById(userId: string): Promise<string[]>;
 };
 
 export type HTTPRequestOptions = {

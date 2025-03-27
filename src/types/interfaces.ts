@@ -1,3 +1,5 @@
+import { User } from './User';
+
 export interface IFilmsResponse {
   page?: number | string;
   next?: string | null;
@@ -24,4 +26,17 @@ export interface IFilmsResponse {
 export interface IFilmsRequest {
   title: string;
   page: string;
+}
+
+export interface IHistoryRequest {
+  userId: User['_id'];
+  request: string;
+  url: string;
+}
+
+export interface IHistoryResponse {
+  _id: string;
+  request: string;
+  url: string;
+  created_at: string;
 }

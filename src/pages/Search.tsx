@@ -12,8 +12,11 @@ import ImageNotFound from '../assets/images/imageNotFound.jpg';
 import { Card } from '../components/Card';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { useSearchParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 import { IFilmsRequest } from '../types/interfaces';
+import useAppDispatch from '../hooks/useAppDispatch';
+import { saveHistory, selectUser } from '../redux/slices/user.slice';
+import { useSelector } from 'react-redux';
 
 export default function Search() {
   const [getFilms, { error, data, isFetching, reset }] = useLazyGetFilmsQuery();
@@ -23,32 +26,29 @@ export default function Search() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [paginationCount, setPaginationCount] = useState(1);
-  const flag = useRef(false);
+  const isFirstRender = useRef(true);
+  const paginationCount = useRef(1);
+  const dispatch = useAppDispatch();
+  const user = useSelector(selectUser());
+  const location = useLocation();
+
+  if (data && data.next) {
+    const page = Number(new URLSearchParams(data.next).get('page'));
+
+    if (page > paginationCount.current) {
+      paginationCount.current = page;
+    }
+  }
 
   useEffect(() => {
-    if (data && data.page) {
-      setFilmsRequest({ ...filmsRequest, page: data.page.toString() });
-    }
-
-    if (data && data.next) {
-      const page = Number(new URLSearchParams(data.next).get('page'));
-
-      if (page > paginationCount) {
-        setPaginationCount(page);
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!flag.current) {
+    if (isFirstRender.current) {
       for (const entry of searchParams.entries()) {
         if (entry[0] in filmsRequest) {
           setFilmsRequest((prev) => ({ ...prev, [entry[0]]: entry[1] }));
         }
       }
 
-      flag.current = true;
+      isFirstRender.current = false;
       const title = searchParams.get('title');
 
       if (title) {
@@ -74,7 +74,7 @@ export default function Search() {
         setIsSubmitted(false);
       }
     }
-  }, [filmsRequest, isSubmitted]);
+  }, [filmsRequest, getFilms, isSubmitted, searchParams, setSearchParams]);
 
   if (error) {
     console.log('error', error);
@@ -84,21 +84,31 @@ export default function Search() {
     e.preventDefault();
 
     if (filmsRequest.title) {
-      flag.current = true;
+      isFirstRender.current = false;
       setIsSubmitted(true);
+
+      if (user) {
+        dispatch(
+          saveHistory({
+            userId: user._id,
+            request: filmsRequest.title,
+            url: `${location.pathname}${location.search}`,
+          })
+        );
+      }
     }
   }
 
   function handlePaginationChange(e: React.ChangeEvent<unknown>, page: number) {
     setFilmsRequest({ ...filmsRequest, page: page.toString() });
-    flag.current = true;
+    isFirstRender.current = false;
     setIsSubmitted(true);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     reset();
-    setPaginationCount(1);
-    flag.current = true;
+    paginationCount.current = 1;
+    isFirstRender.current = false;
     setFilmsRequest({
       ...filmsRequest,
       title: e.target.value.trimStart(),
@@ -108,7 +118,7 @@ export default function Search() {
 
   function handleButtonClick() {
     reset();
-    setPaginationCount(1);
+    paginationCount.current = 1;
     setFilmsRequest({ ...filmsRequest, title: '', page: '' });
   }
 
@@ -236,13 +246,13 @@ export default function Search() {
           <Pagination
             onChange={handlePaginationChange}
             size="medium"
-            page={Number(filmsRequest.page)}
+            page={Number(data.page)}
             sx={{
               '& button': {
                 fontSize: 16,
               },
             }}
-            count={paginationCount}
+            count={paginationCount.current}
           />
         </Box>
       )}
