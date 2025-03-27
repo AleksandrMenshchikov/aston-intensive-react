@@ -5,6 +5,6 @@ export default function removeProperty<T extends Record<any, any>>(
 ) {
   const newObj = { ...obj };
   delete newObj[prop];
-  
+
   return newObj;
 }
