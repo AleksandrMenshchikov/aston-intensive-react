@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,7 +10,7 @@ import useAppDispatch from '../hooks/useAppDispatch';
 import { selectLoginStatus, signUp } from '../redux/slices/user.slice';
 import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
-import removeProperty from '../utils/removeProperty';
+import removeError from '../utils/removeErrors';
 
 interface SignUpFormValues {
   username: string;
@@ -32,15 +32,18 @@ export default function SignUpForm() {
   };
   const dispatch = useAppDispatch();
   const isLogged = useSelector(selectLoginStatus());
-
-  if (isLogged) redirectToMainPage();
+  // Если залогинен то выгоняем на главную
+  useEffect(() => {
+    if (isLogged) redirectToMainPage();
+  }, [isLogged]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setErrors((prev) => removeProperty(prev, name));
+    if (Object.keys(errors).length)
+      setErrors((prev) => removeError(prev, name)); //Убираем ошибки при начале ввода
     const { name, value } = event.target;
     setFormValues((prevData) => ({
       ...prevData,
-      [name]: value.trim(),
+      [name]: value.trim(), //Не позволяем вводить пробелы
     }));
   };
 
@@ -80,90 +83,93 @@ export default function SignUpForm() {
 
     try {
       const result = await dispatch(signUp(payload));
-
-      setFormValues({ username: '', email: '', password: '' });
       setErrors({});
 
-      if (typeof result.payload === 'string') {
+      if (result.payload === true) {
         alert('Вы успешно зарегистрированы');
+        setFormValues({ username: '', email: '', password: '' });
+        // Чистим форму только в случае успешной авторизации.
         redirectToMainPage();
       }
+      if (result.payload instanceof Error)
+        setErrors({ server: result.payload.message });
     } catch (error) {
       setErrors({ server: `Произошла ошибка ${error}` });
     } finally {
       setIsLoading(false);
     }
   };
-
-  return (
-    <Box
-      sx={{
-        width: '100%',
-        margin: 'auto',
-        padding: 3,
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          margin: '0 auto',
-          width: '25%',
+  // Рисуем только если пользователь не залогинен
+  if (!isLogged)
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          margin: 'auto',
+          padding: 3,
         }}
       >
-        <Typography variant="h5" gutterBottom>
-          Регистрация
-        </Typography>
-        <TextField
-          label="Имя пользователя"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          variant="outlined"
-          margin="normal"
-          error={!!errors.username}
-          helperText={errors.username}
-        />
-        <TextField
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          margin="normal"
-          error={!!errors.email}
-          helperText={errors.email}
-        />
-        <TextField
-          label="Пароль"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          variant="outlined"
-          margin="normal"
-          error={!!errors.password}
-          helperText={errors.password}
-        />
-
-        {errors.server && (
-          <FormHelperText error sx={{ mt: 2 }}>
-            {errors.server}
-          </FormHelperText>
-        )}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          size="large"
-          style={{ marginTop: '10px' }}
-          sx={{ mt: 3 }}
-          disabled={isLoading || Object.keys(errors).length > 0}
-          loading={isLoading}
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            margin: '0 auto',
+            width: '25%',
+          }}
         >
-          Зарегистрироваться
-        </Button>
-      </form>
-    </Box>
-  );
+          <Typography variant="h5" gutterBottom>
+            Регистрация
+          </Typography>
+          <TextField
+            label="Имя пользователя"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            error={!!errors.username}
+            helperText={errors.username}
+          />
+          <TextField
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            margin="normal"
+            error={!!errors.email}
+            helperText={errors.email}
+          />
+          <TextField
+            label="Пароль"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            error={!!errors.password}
+            helperText={errors.password}
+          />
+
+          {errors.server && (
+            <FormHelperText error sx={{ mt: 2 }}>
+              {errors.server}
+            </FormHelperText>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{ marginTop: '10px' }}
+            sx={{ mt: 3 }}
+            disabled={isLoading || Object.keys(errors).length > 0}
+            loading={isLoading}
+          >
+            Зарегистрироваться
+          </Button>
+        </form>
+      </Box>
+    );
 }

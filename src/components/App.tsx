@@ -8,7 +8,6 @@ import { loadUserData, selectLoginStatus } from '../redux/slices/user.slice';
 import { useSelector } from 'react-redux';
 import useAppDispatch from '../hooks/useAppDispatch';
 import Logout from './Logout';
-import ProtectedRoute from './ProtectedRoute';
 
 const Signin = lazy(() => import('../pages/Signin'));
 const Signup = lazy(() => import('../pages/Signup'));
@@ -21,20 +20,14 @@ export function App() {
   useEffect(() => {
     if (isLogged) dispatch(loadUserData());
   }, [isLogged]);
+
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index path={Page.Home} element={<Home />} />
         <Route path={Page.Signin} element={<Signin />} />
         <Route path={Page.Signup} element={<Signup />} />
-        <Route
-          path={Page.Search}
-          element={
-            <ProtectedRoute isAuthenticated={isLogged}>
-              <Search />
-            </ProtectedRoute>
-          }
-        />
+        <Route path={Page.Search} element={<Search />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
       </Route>

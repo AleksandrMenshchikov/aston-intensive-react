@@ -1,12 +1,10 @@
 export default function handleError(err: ExpectedError) {
-  console.error(err);
-  if (typeof err === 'string') {
-    alert(err);
-  } else if (err.message && typeof err.message === 'string') {
-    alert(err.message);
+  if (typeof err.message === 'string') {
+    console.error(err.message);
   } else {
-    alert('Произошла ошибка, вы можете увидеть её в консоле');
+    alert('Произошла неожиданная ошибка, вы можете увидеть её в консоле');
+    console.error(err);
   }
 }
 
-export type ExpectedError = { message: string; reason: string };
+export type ExpectedError = { message: string };
