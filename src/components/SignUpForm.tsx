@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -27,15 +27,15 @@ export default function SignUpForm() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const redirectToMainPage = () => {
+  const redirectToMainPage = useCallback(() => {
     navigate('/', { replace: true });
-  };
+  },[navigate]);
   const dispatch = useAppDispatch();
   const isLogged = useSelector(selectLoginStatus());
   // Если залогинен то выгоняем на главную
   useEffect(() => {
     if (isLogged) redirectToMainPage();
-  }, [isLogged]);
+  }, [isLogged, redirectToMainPage]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (Object.keys(errors).length)

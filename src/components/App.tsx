@@ -20,7 +20,7 @@ export function App() {
 
   useEffect(() => {
     if (isLogged) dispatch(loadUserData());
-  }, [isLogged]);
+  }, [dispatch, isLogged]);
 
   return (
     <Routes>
