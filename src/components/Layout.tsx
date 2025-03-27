@@ -18,11 +18,13 @@ import Logo from '../assets/images/logo.png';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { ErrorBoundary } from './ErrorBoundary';
 import { Page } from '../types/enums';
+import { useSelector } from 'react-redux';
+import { selectLoginStatus } from '../redux/slices/user.slice';
 
 export function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const isLogged = useSelector(selectLoginStatus());
   return (
     <>
       <AppBar position="fixed" sx={{ minHeight: 64, backgroundColor: '#fff' }}>
@@ -95,30 +97,46 @@ export function Layout() {
             </Box>
           </Button>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                textTransform: 'none',
-                color: 'primary',
-                fontSize: 16,
-              }}
-              onClick={() => navigate('/signin')}
-            >
-              Вход
-            </Button>
-            <Button
-              variant="outlined"
-              sx={{
-                textTransform: 'none',
-                color: 'primary',
-                fontSize: 16,
-              }}
-              onClick={() => {
-                navigate('/signup');
-              }}
-            >
-              Регистрация
-            </Button>
+            {!isLogged ?
+              <>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    textTransform: 'none',
+                    color: 'primary',
+                    fontSize: 16,
+                  }}
+                  onClick={() => navigate('/signin')}
+                >
+                  Вход
+                </Button>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    textTransform: 'none',
+                    color: 'primary',
+                    fontSize: 16,
+                  }}
+                  onClick={() => {
+                    navigate('/signup');
+                  }}
+                >
+                  Регистрация
+                </Button>
+              </> :
+              <Button
+                variant="outlined"
+                sx={{
+                  textTransform: 'none',
+                  color: 'primary',
+                  fontSize: 16,
+                }}
+                onClick={() => {
+                  navigate('/logout');
+                }}
+              >
+                Выход
+              </Button>}
           </Box>
         </Box>
       </AppBar>
