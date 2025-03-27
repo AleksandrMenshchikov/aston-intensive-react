@@ -6,21 +6,17 @@ import {
   TextField,
   FormHelperText,
 } from '@mui/material';
+import useAppDispatch from '../hooks/useAppDispatch';
+import { selectLoginStatus, signUp } from '../redux/slices/user.slice';
+import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
+import removeProperty from '../utils/removeProperty';
 
 interface SignUpFormValues {
   username: string;
   email: string;
   password: string;
 }
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-}
-
-const users: User[] = []; // Массив для хранения пользователей
 
 export default function SignUpForm() {
   const [formData, setFormValues] = useState<SignUpFormValues>({
@@ -30,12 +26,19 @@ export default function SignUpForm() {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const redirectToMainPage = () => { navigate('/', { replace: true }); };
+  const dispatch = useAppDispatch();
+  const isLogged = useSelector(selectLoginStatus());
+
+  if (isLogged) redirectToMainPage();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setErrors((prev) => removeProperty(prev, name));
     const { name, value } = event.target;
     setFormValues((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value.trim(),
     }));
   };
 
@@ -70,32 +73,19 @@ export default function SignUpForm() {
       return;
     }
 
+    setIsLoading(true);
+    const payload = { ...formData };
+
     try {
-      setIsLoading(true);
+      const result = await dispatch(signUp(payload));
 
-      // Проверка, существует ли пользователь с таким email
-      const existingUser = users.find((user) => user.email === formData.email);
-      if (existingUser) {
-        setErrors({ email: 'Пользователь с таким email уже существует' });
-        return;
-      }
-
-      // Создание нового пользователя
-      const newUser: User = {
-        id: Date.now(), // Используем timestamp как ID
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      };
-
-      // Добавление пользователя в массив
-      users.push(newUser);
-
-      // Очистка формы
       setFormValues({ username: '', email: '', password: '' });
       setErrors({});
 
-      console.log('Зарегистрированные пользователи:', users);
+      if (typeof result.payload === 'string') {
+        alert('Вы успешно зарегистрированы');
+        redirectToMainPage();
+      }
     } catch (error) {
       setErrors({ server: `Произошла ошибка ${error}` });
     } finally {

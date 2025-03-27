@@ -10,7 +10,7 @@ const fakeServer: FakeServer = {
     const methodError =
       'При попытке зарегистрировать пользователя произошла ошибка: ';
     if (!email.trim() || !password.trim())
-      throw new Error(methodError + 'Некоторые поля пустые');
+      throw new Error(`${methodError} Некоторые поля пустые`);
 
     const newUser: User = {
       email,
@@ -24,7 +24,7 @@ const fakeServer: FakeServer = {
     const isUserExists = userCollection.some((u) => u.email === email);
 
     if (isUserExists)
-      throw new Error(methodError + `Пользователь ${email} уже существует`);
+      throw new Error(`Пользователь ${email} уже существует`);
 
     userCollection.push(newUser);
     localStorage.setItem(
@@ -44,7 +44,7 @@ const fakeServer: FakeServer = {
     const userCollection: User[] = JSON.parse(lookupResults);
     const currentUser = userCollection.find((user) => user.email === email);
     if (!currentUser || currentUser.password !== password)
-      throw credentialsError;
+      throw new Error(credentialsError);
 
     return currentUser._id;
   },

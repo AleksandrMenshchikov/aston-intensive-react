@@ -3,44 +3,46 @@ import { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import useAppDispatch from '../hooks/useAppDispatch';
 import { signIn } from '../redux/slices/user.slice';
+import { useNavigate } from 'react-router';
+import showElement from '../utils/debug/showElement';
 
 interface SigninFormData {
-  username: string;
+  email: string;
   password: string;
 }
 
 export default function Signin() {
   const [formData, setFormData] = useState<SigninFormData>({
-    username: '',
+    email: '',
     password: '',
   });
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
+  const navigae = useNavigate();
+  const redirectBack = () => navigae(-1);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value.trim(),
     }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Проверка полей
-    if (!formData.username || !formData.password) {
+    if (!formData.email || !formData.password) {
       setError('Пожалуйста, заполните все поля');
       return;
     }
-    const payload = { email: formData.username, password: formData.password };
+    const payload = { ...formData };
     try {
-      // Отправка данных на сервер
       const response = (await dispatch(signIn(payload))).payload;
-      if (response) {
-        // Успешная авторизация
+      showElement(response, 'response');
+      if (typeof response === 'string') {
         setError(null);
-        // Здесь будет логика перенаправления
+        redirectBack();
       } else {
         setError('Неверные логин или пароль');
       }
@@ -61,8 +63,8 @@ export default function Signin() {
     >
       <TextField
         label="Имя пользователя"
-        name="username"
-        value={formData.username}
+        name="email"
+        value={formData.email}
         onChange={handleChange}
         variant="outlined"
       />
@@ -85,7 +87,7 @@ export default function Signin() {
         color="primary"
         size="large"
         style={{ marginTop: '10px' }}
-        disabled={!formData.username || !formData.password}
+        disabled={!formData.email || !formData.password}
       >
         Войти
       </Button>

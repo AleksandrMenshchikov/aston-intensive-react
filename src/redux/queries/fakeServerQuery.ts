@@ -1,6 +1,6 @@
 import { FunctionKeys } from './../../types/utils';
 import fakeServer, { FakeServer } from '../../backend/api/fakeServer';
-import handleError from '../../utils/handleError';
+import handleError, { ExpectedError } from '../../utils/handleError';
 
 export async function fakeServerQuery<
   MethodName extends FunctionKeys<FakeServer>,
@@ -22,8 +22,8 @@ export async function fakeServerQuery<
     )(...methodArgs);
 
     return { data: result };
-  } catch (error: unknown) {
-    handleError(error);
+  } catch (error) {
+    handleError(error as ExpectedError);
     return { error };
   }
 }
