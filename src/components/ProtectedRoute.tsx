@@ -1,12 +1,13 @@
 import React, { ReactElement } from 'react';
-import { Navigate, Outlet } from 'react-router';
+import { Navigate } from 'react-router';
 
 export default function ProtectedRoute({
   isAuthenticated,
   redirectPath = '/signin',
+  children,
 }: Props) {
   return isAuthenticated ? (
-    <Outlet />
+    children
   ) : (
     <Navigate replace state={{ from: location.pathname }} to={redirectPath} />
   );

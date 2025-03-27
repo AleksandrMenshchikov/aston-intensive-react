@@ -4,7 +4,7 @@ import {
   PayloadAction,
   SerializedError,
 } from '@reduxjs/toolkit';
-import { User, UserId } from '../../types/User';
+import { User } from '../../types/User';
 import tokenService from '../../services/token.service';
 import { RootState } from '../store';
 import { AuthPayload, userApi } from '../api/userApi';
@@ -51,7 +51,7 @@ export const updateUser = createAsyncThunk<Partial<User | null>, Partial<User>>(
   }
 );
 
-export const signUp = createAsyncThunk<UserId, AuthPayload>(
+export const signUp = createAsyncThunk<boolean, AuthPayload>(
   sliceName + '/signUp',
   async (payload, thunkAPI) => {
     try {
@@ -60,14 +60,14 @@ export const signUp = createAsyncThunk<UserId, AuthPayload>(
         .unwrap();
       console.log(userId);
       tokenService.setAuth(userId);
-      return userId;
+      return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const signIn = createAsyncThunk<UserId, AuthPayload>(
+export const signIn = createAsyncThunk<boolean, AuthPayload>(
   sliceName + '/signIn',
   async (payload, thunkAPI) => {
     try {
@@ -76,7 +76,7 @@ export const signIn = createAsyncThunk<UserId, AuthPayload>(
         .unwrap();
       console.log(userId);
       tokenService.setAuth(userId);
-      return userId;
+      return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
