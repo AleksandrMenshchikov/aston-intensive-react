@@ -29,7 +29,7 @@ export default function SignUpForm() {
   const navigate = useNavigate();
   const redirectToMainPage = useCallback(() => {
     navigate('/', { replace: true });
-  },[navigate]);
+  }, [navigate]);
   const dispatch = useAppDispatch();
   const isLogged = useSelector(selectLoginStatus());
   // Если залогинен то выгоняем на главную

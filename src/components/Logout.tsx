@@ -17,7 +17,7 @@ export default function Logout() {
     } else {
       navigate(-1);
     }
-  }, [dispatch, navigate])
+  }, [dispatch, navigate]);
   const initiateLogout = useCallback(() => {
     // в StrictMode рендер комонентов проиходит дважды в dev моде,
     // поэтому первый рендер мы пропускаем, чтобы не ломать логику условия.
@@ -30,7 +30,7 @@ export default function Logout() {
         confirmLogout();
       }
     }
-  }, [confirmLogout, isLogged, navigate])
+  }, [confirmLogout, isLogged, navigate]);
 
   useEffect(initiateLogout, [initiateLogout]);
 
