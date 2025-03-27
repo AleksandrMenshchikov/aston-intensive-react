@@ -27,7 +27,9 @@ export default function SignUpForm() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const redirectToMainPage = () => { navigate('/', { replace: true }); };
+  const redirectToMainPage = () => {
+    navigate('/', { replace: true });
+  };
   const dispatch = useAppDispatch();
   const isLogged = useSelector(selectLoginStatus());
 

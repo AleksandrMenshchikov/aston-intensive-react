@@ -97,7 +97,7 @@ export function Layout() {
             </Box>
           </Button>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            {!isLogged ?
+            {!isLogged ? (
               <>
                 <Button
                   variant="outlined"
@@ -123,7 +123,8 @@ export function Layout() {
                 >
                   Регистрация
                 </Button>
-              </> :
+              </>
+            ) : (
               <Button
                 variant="outlined"
                 sx={{
@@ -136,7 +137,8 @@ export function Layout() {
                 }}
               >
                 Выход
-              </Button>}
+              </Button>
+            )}
           </Box>
         </Box>
       </AppBar>
