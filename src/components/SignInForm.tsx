@@ -16,7 +16,10 @@ export default function Signin() {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const redirectToMainPage = useCallback(() => navigate('/', { replace: true }),[navigate]);
+  const redirectToMainPage = useCallback(
+    () => navigate('/', { replace: true }),
+    [navigate]
+  );
   const redirectBack = () => navigate(-1);
   const isLogged = useSelector(selectLoginStatus());
 
