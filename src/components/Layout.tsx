@@ -7,6 +7,7 @@ import { ButtonSearch } from './ButtonSearch';
 import { Auth } from './Auth';
 import { LoggedIn } from './LoggedIn';
 import { ButtonHistory } from './ButtonHistory';
+import { ButtonFavorites } from './ButtonFavorites';
 
 export function Layout() {
   return (
@@ -28,6 +29,7 @@ export function Layout() {
           <Logo />
           <ButtonSearch />
           <ButtonHistory />
+          <ButtonFavorites />
           <Auth />
           <LoggedIn />
         </Box>

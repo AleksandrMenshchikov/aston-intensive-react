@@ -1,5 +1,6 @@
 import { Box, css, Typography } from '@mui/material';
 import React from 'react';
+import BookmarkButton from './BookmarkButton';
 
 export function Card({
   imgSrc,
@@ -10,6 +11,7 @@ export function Card({
   titleText,
   releaseYear,
   onErrorImage,
+  filmId,
 }: {
   imgSrc: string;
   imgAlt: string;
@@ -19,6 +21,7 @@ export function Card({
   titleText: string;
   releaseYear: number | string;
   onErrorImage: string;
+  filmId: string;
 }) {
   return (
     <Box
@@ -30,6 +33,7 @@ export function Card({
         justifyContent: 'space-between',
       }}
     >
+      <BookmarkButton filmId={filmId} />
       <img
         src={imgSrc}
         alt={imgAlt}
