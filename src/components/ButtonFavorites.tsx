@@ -1,6 +1,5 @@
 import { BookmarksRounded } from '@mui/icons-material';
 import { Page } from '../types/enums';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { Box, Button } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router';
