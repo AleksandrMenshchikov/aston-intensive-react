@@ -105,11 +105,16 @@ export const saveHistory = createAsyncThunk<IHistoryResponse, IHistoryRequest>(
   }
 );
 
-export const getUserHistoriesById = createAsyncThunk<string[], User['_id']>(
+export const getUserHistory = createAsyncThunk<string[]>(
   sliceName + '/getUserHistoriesById',
-  async (userId) => {
-    await new Promise((res) => setTimeout(res, 1000));
-    return await fakeServer.getUserHistoriesById(userId);
+  async (_, { getState }) => {
+    const userData = (getState() as RootState).user.userData;
+
+    if (!userData) {
+      throw new Error('userData is undefined');
+    }
+
+    return await fakeServer.getUserHistoryById(userData._id);
   }
 );
 
@@ -119,7 +124,7 @@ const userSlice = createSlice({
   reducers: {
     setInitialState: (state) => {
       state.userData = initialState.userData;
-      state.isLogged = initialState.isLogged;
+      state.isLogged = false;
       state.isLoading = initialState.isLoading;
       state.dataIsLoaded = initialState.dataIsLoaded;
       state.error = initialState.error;
@@ -137,9 +142,9 @@ const userSlice = createSlice({
       .addCase(signIn.fulfilled, setAuth)
       .addCase(signIn.rejected, setError)
       .addCase(logOut.fulfilled, clearUserData)
-      .addCase(getUserHistoriesById.pending, setIsLoading)
-      .addCase(getUserHistoriesById.fulfilled, setHistories)
-      .addCase(getUserHistoriesById.rejected, setError);
+      .addCase(getUserHistory.pending, setIsLoading)
+      .addCase(getUserHistory.fulfilled, setHistories)
+      .addCase(getUserHistory.rejected, setError);
   },
 });
 
@@ -155,6 +160,8 @@ export const selectUserDataStatus = () => (state: RootState) =>
   state.user.dataIsLoaded;
 export const selectUserIsLoading = () => (state: RootState) =>
   state.user.isLoading;
+export const selectUserHistory = () => (state: RootState) =>
+  state.user.userData?.history;
 
 export type UserState = {
   userData: User | null;

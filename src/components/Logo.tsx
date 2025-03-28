@@ -12,7 +12,6 @@ export function Logo() {
         display: 'flex',
         textDecoration: 'none',
         gap: 1,
-        '@media (max-width: 390px)': { display: 'none' },
       }}
     >
       <img
@@ -28,7 +27,7 @@ export function Logo() {
         sx={{
           fontSize: 30,
           color: 'textPrimary',
-          '@media (max-width: 490px)': {
+          '@media (max-width: 630px)': {
             display: 'none',
           },
         }}

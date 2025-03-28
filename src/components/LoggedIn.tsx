@@ -37,6 +37,9 @@ export function LoggedIn() {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
+          '@media (max-width: 390px)': {
+            display: 'none',
+          },
         }}
       >
         {data && data.email}

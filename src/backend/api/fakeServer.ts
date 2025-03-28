@@ -110,7 +110,7 @@ const fakeServer: FakeServer = {
     await this.updateUser({ id: userId, payload: user });
     return history;
   },
-  async getUserHistoriesById(userId: string) {
+  async getUserHistoryById(userId: string) {
     const user = await this.getUserById(userId);
     return user.history;
   },
@@ -132,7 +132,7 @@ export type FakeServer = {
   getUserById(id: string): Promise<User>;
   getFilmList(url: string, options: HTTPRequestOptions): Promise<Film[]>;
   saveHistory(data: IHistoryRequest): Promise<IHistoryResponse>;
-  getUserHistoriesById(userId: string): Promise<string[]>;
+  getUserHistoryById(userId: string): Promise<string[]>;
 };
 
 export type HTTPRequestOptions = {

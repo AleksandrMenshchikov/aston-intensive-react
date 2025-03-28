@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react';
 import { Navigate } from 'react-router';
+import { Page } from '../types/enums';
 
 export default function ProtectedRoute({
   isAuthenticated,
-  redirectPath = '/signin',
+  redirectPath = Page.Signin,
   children,
 }: Props) {
   return isAuthenticated ? (
