@@ -8,11 +8,13 @@ import { loadUserData, selectLoginStatus } from '../redux/slices/user.slice';
 import { useSelector } from 'react-redux';
 import useAppDispatch from '../hooks/useAppDispatch';
 import Logout from './Logout';
+import { Favorites } from '../pages/Favorites';
 
 const Signin = lazy(() => import('../pages/Signin'));
 const Signup = lazy(() => import('../pages/Signup'));
 const Search = lazy(() => import('../pages/Search'));
 const History = lazy(() => import('../pages/History'));
+// const Favorites = lazy(() => import('../pages/Favorites')); //TODO разобрать почему ошибка. Исправить.
 
 export function App() {
   const isLogged = useSelector(selectLoginStatus());
@@ -30,6 +32,7 @@ export function App() {
         <Route path={Page.Signup} element={<Signup />} />
         <Route path={Page.Search} element={<Search />} />
         <Route path={Page.History} element={<History />} />
+        <Route path={Page.Favorites} element={<Favorites />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
       </Route>

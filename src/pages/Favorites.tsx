@@ -1,11 +1,14 @@
 import React from 'react';
-import { useGetRandomFilmsQuery } from '../redux/api/filmApi';
+import { useGetFilmsByIdListQuery } from '../redux/api/filmApi';
 import { Alert, Box, LinearProgress } from '@mui/material';
 import { Card } from '../components/Card';
 import ImageNotFound from '../assets/images/imageNotFound.jpg';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { selectUserFavorites } from '../redux/slices/user.slice';
 
-export function Home() {
-  const { data, error, isLoading } = useGetRandomFilmsQuery();
+export function Favorites() {
+  const userFavorites = useAppSelector(selectUserFavorites) || [];
+  const { data, error, isLoading } = useGetFilmsByIdListQuery(userFavorites);
 
   if (isLoading) {
     return <LinearProgress sx={{ width: '100%' }} />;
