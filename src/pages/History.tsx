@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useRef } from 'react';
 import {
-  Box,
   LinearProgress,
   List,
   ListItem,
@@ -10,64 +9,67 @@ import {
 import { useAppSelector } from '../hooks/useAppSelector';
 import useAppDispatch from '../hooks/useAppDispatch';
 import {
-  getUserHistoriesById,
-  selectUser,
+  getUserHistory,
+  selectUserHistory,
   selectUserIsLoading,
 } from '../redux/slices/user.slice';
-import { IHistoryResponse } from '../types/interfaces';
 import { useNavigate } from 'react-router';
+import { EmptyHistory } from '../components/EmptyHistory';
 
 export default function History() {
-  const data = useAppSelector(selectUser());
+  const history = useAppSelector(selectUserHistory());
   const isLoading = useAppSelector(selectUserIsLoading());
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const isFirstRender = useRef(true);
 
-  // TODO удалить как будет data
-  const temporaryData: IHistoryResponse[] = [];
-  for (let i = 0; i < 10; i++) {
-    temporaryData.push({
-      _id: i.toString(),
-      url: '/search?title=Film',
-      created_at: new Date().toLocaleString(),
-      request: 'Film',
-    });
-  }
-  //
-  useEffect(() => {
-    if (data) {
-      dispatch(getUserHistoriesById(data._id));
+  const parsedData = history?.map((item) => JSON.parse(item));
+
+  (function getHistory() {
+    if (isFirstRender.current) {
+      dispatch(getUserHistory());
     }
-  }, [data, dispatch]);
 
-  return (
-    <Box>
-      {isLoading && <LinearProgress />}
-      <Typography
-        component="h1"
-        fontSize={24}
-        textAlign="center"
-        fontWeight={500}
-      >
-        История запросов
-      </Typography>
-      <List>
-        {temporaryData.map((item) => (
-          <ListItem key={item._id} disablePadding>
-            <ListItemButton
-              onClick={() => navigate(item.url)}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-              }}
-            >
-              <Typography fontSize={15}>{item.created_at}</Typography>
-              <Typography fontWeight={500}>{item.request}</Typography>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+    isFirstRender.current = false;
+  })();
+
+  if (isLoading) {
+    return <LinearProgress />;
+  }
+
+  if (!history || history.length === 0) {
+    return <EmptyHistory />;
+  }
+
+  if (history && history.length > 0) {
+    return (
+      <>
+        <Typography
+          component="h1"
+          fontSize={24}
+          textAlign="center"
+          fontWeight={500}
+        >
+          История запросов
+        </Typography>
+        <List>
+          {parsedData?.map((item) => (
+            <ListItem key={item._id} disablePadding>
+              <ListItemButton
+                onClick={() => navigate(item.url)}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <Typography fontSize={15}>{item.created_at}</Typography>
+                <Typography fontWeight={500}>{item.request}</Typography>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </>
+    );
+  }
 }

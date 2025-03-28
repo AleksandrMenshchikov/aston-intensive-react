@@ -23,7 +23,7 @@ export function ButtonSearch() {
         component="span"
         sx={{
           pl: 1,
-          '@media (max-width: 714px)': {
+          '@media (max-width: 840px)': {
             display: 'none',
           },
         }}
