@@ -8,7 +8,6 @@ import { loadUserData, selectLoginStatus } from '../redux/slices/user.slice';
 import { useSelector } from 'react-redux';
 import useAppDispatch from '../hooks/useAppDispatch';
 import Logout from './Logout';
-import { Favorites } from '../pages/Favorites';
 import ProtectedRoute from './ProtectedRoute';
 
 const Signin = lazy(() => import('../pages/Signin'));
