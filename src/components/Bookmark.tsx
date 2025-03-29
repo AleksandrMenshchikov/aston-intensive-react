@@ -5,7 +5,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import { css } from '@mui/material';
 import ButtonBookmark from './ButtonBookmark';
 
-export default function BookmarkButton({ filmId }: { filmId: string }) {
+export default function Bookmark({ filmId }: { filmId: string }) {
   const dispatch = useAppDispatch();
   const userData = useAppSelector(selectUser());
   const favorites = userData?.favorites;
