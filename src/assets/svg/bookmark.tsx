@@ -3,8 +3,8 @@ import React from 'react';
 export const bookmarkSVG = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
+    width="20"
+    height="20"
     fill="currentColor"
     className="bi bi-bookmark"
     viewBox="0 0 16 16"
@@ -16,8 +16,8 @@ export const bookmarkSVG = (
 export const bookmarkFiilSVG = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
+    width="20"
+    height="20"
     fill="currentColor"
     className="bi bi-bookmark-fill"
     viewBox="0 0 16 16"

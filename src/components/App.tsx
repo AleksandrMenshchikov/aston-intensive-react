@@ -15,7 +15,7 @@ const Signin = lazy(() => import('../pages/Signin'));
 const Signup = lazy(() => import('../pages/Signup'));
 const Search = lazy(() => import('../pages/Search'));
 const History = lazy(() => import('../pages/History'));
-// const Favorites = lazy(() => import('../pages/Favorites')); //TODO разобрать почему ошибка. Исправить.
+const Favorites = lazy(() => import('../pages/Favorites'));
 
 export function App() {
   const isLogged = useSelector(selectLoginStatus());

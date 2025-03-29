@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { selectUser, updateUser } from '../redux/slices/user.slice';
 import useAppDispatch from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { bookmarkFiilSVG, bookmarkSVG } from '../assets/svg/bookmark';
 import { css } from '@mui/material';
+import ButtonBookmark from './ButtonBookmark';
 
 export default function BookmarkButton({ filmId }: { filmId: string }) {
   const dispatch = useAppDispatch();
@@ -12,7 +12,6 @@ export default function BookmarkButton({ filmId }: { filmId: string }) {
   const [isMarked, setIsMarked] = useState(
     !!favorites?.find((id) => id === filmId)
   );
-  const icon = isMarked ? bookmarkFiilSVG : bookmarkSVG;
 
   function handleClick() {
     const updatedFavorites = changeFavorites(filmId, isMarked);
@@ -31,14 +30,13 @@ export default function BookmarkButton({ filmId }: { filmId: string }) {
     }
   }
 
-  const buttonStyles = css({ cursor: 'pointer' });
-  const bookmarkStyles = css({ background: 'none', position: 'absolute' });
+  const bookmarkStyles = css({
+    position: 'absolute',
+  });
 
   return (
     <div css={bookmarkStyles}>
-      <button css={buttonStyles} type="button" onClick={handleClick}>
-        {icon}
-      </button>
+      <ButtonBookmark isMarked={isMarked} onClick={handleClick} />
     </div>
   );
 }

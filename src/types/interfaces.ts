@@ -5,7 +5,7 @@ export interface IFilmsResponse {
   next?: string | null;
   entries: number;
   results?: {
-    // TODO по этому id находятся фильмы ищутся.
+    //по этому id ищутся фильмы.
     id: string;
     _id: string;
     primaryImage: {

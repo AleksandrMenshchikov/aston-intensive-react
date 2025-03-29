@@ -43,21 +43,3 @@ export const {
   useLazyGetFilmsQuery,
   useGetFilmsByIdListQuery,
 } = filmApi;
-
-// TODO reference
-// const url = 'https://moviesdatabase.p.rapidapi.com/titles/x/titles-by-ids?idsList=tt4295140%2C%20tt0436992';
-// const options = {
-// 	method: 'GET',
-// 	headers: {
-// 		'x-rapidapi-key': 'c40f5dc7ffmsh784d0dc2efd0961p1866b9jsn9aa4867a76dd',
-// 		'x-rapidapi-host': 'moviesdatabase.p.rapidapi.com'
-// 	}
-// };
-
-// try {
-// 	const response = await fetch(url, options);
-// 	const result = await response.text();
-// 	console.log(result);
-// } catch (error) {
-// 	console.error(error);
-// }

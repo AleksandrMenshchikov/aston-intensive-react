@@ -1,4 +1,4 @@
-import { BookmarksRounded } from '@mui/icons-material';
+import BookmarksOutlined from '@mui/icons-material/BookmarksRounded';
 import { Page } from '../types/enums';
 import { Box, Button } from '@mui/material';
 import React from 'react';
@@ -18,7 +18,7 @@ export function ButtonFavorites() {
       }}
       onClick={() => navigate(Page.Favorites)}
     >
-      <BookmarksRounded fontSize="medium" sx={{ color: 'orange' }} />
+      <BookmarksOutlined fontSize="medium" />
       <Box
         component="span"
         sx={{

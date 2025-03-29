@@ -6,7 +6,7 @@ import ImageNotFound from '../assets/images/imageNotFound.jpg';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { selectUserFavorites } from '../redux/slices/user.slice';
 
-export function Favorites() {
+export default function Favorites() {
   const userFavorites = useAppSelector(selectUserFavorites) || [];
   const { data, error, isLoading } = useGetFilmsByIdListQuery(userFavorites);
 
