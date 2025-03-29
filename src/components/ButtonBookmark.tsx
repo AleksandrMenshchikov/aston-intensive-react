@@ -1,6 +1,7 @@
 import React from 'react';
-import { bookmarkFiilSVG, bookmarkSVG } from '../assets/svg/bookmark';
 import { css } from '@mui/material';
+import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
+import BookmarkRounded from '@mui/icons-material/BookmarkRounded';
 
 export default function ButtonBookmark({
   isMarked,
@@ -10,7 +11,6 @@ export default function ButtonBookmark({
   onClick: () => void;
   size?: number;
 }) {
-  const icon = isMarked ? bookmarkFiilSVG : bookmarkSVG;
   const buttonStyles = css({
     cursor: 'pointer',
     border: 'none',
@@ -20,7 +20,7 @@ export default function ButtonBookmark({
   });
   return (
     <button css={buttonStyles} type="button" onClick={onClick}>
-      {icon}
+      {isMarked ? <BookmarkRounded /> : <BookmarkBorder />}
     </button>
   );
 }
