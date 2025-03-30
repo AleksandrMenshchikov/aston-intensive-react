@@ -22,7 +22,13 @@ export function Auth() {
   }
 
   return (
-    <Box sx={{ display: isLogged ? 'none' : 'flex', gap: 1 }}>
+    <Box
+      sx={{
+        display: isLogged ? 'none' : 'flex',
+        gap: 1,
+        '@media (max-width: 530px)': { display: 'none' },
+      }}
+    >
       <Button
         variant="outlined"
         sx={{
