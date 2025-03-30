@@ -39,7 +39,14 @@ export function App() {
             </ProtectedRoute>
           }
         />
-        <Route path={Page.Favorites} element={<Favorites />} />
+        <Route
+          path={Page.Favorites}
+          element={
+            <ProtectedRoute isAuthenticated={isLogged}>
+              <Favorites />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
       </Route>
