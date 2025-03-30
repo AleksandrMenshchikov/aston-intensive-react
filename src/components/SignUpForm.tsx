@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
-  Typography,
   Button,
-  TextField,
   FormHelperText,
+  TextField,
+  Typography,
 } from '@mui/material';
 import useAppDispatch from '../hooks/useAppDispatch';
 import { selectLoginStatus, signUp } from '../redux/slices/user.slice';
 import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import removeError from '../utils/removeErrors';
+import { Container } from './Container';
 
 interface SignUpFormValues {
   username: string;
@@ -102,25 +103,25 @@ export default function SignUpForm() {
   // Рисуем только если пользователь не залогинен
   if (!isLogged)
     return (
-      <Box
-        sx={{
-          width: '100%',
-          margin: 'auto',
-          padding: 3,
-        }}
-      >
-        <form
+      <Container>
+        <Typography
+          variant="h5"
+          gutterBottom
+          textAlign="center"
+          fontWeight={500}
+        >
+          Регистрация
+        </Typography>
+        <Box
+          component="form"
           onSubmit={handleSubmit}
           style={{
             display: 'flex',
             flexDirection: 'column',
-            margin: '0 auto',
-            width: '25%',
+            width: '100%',
+            maxWidth: 300,
           }}
         >
-          <Typography variant="h5" gutterBottom>
-            Регистрация
-          </Typography>
           <TextField
             label="Имя пользователя"
             name="username"
@@ -151,7 +152,6 @@ export default function SignUpForm() {
             error={!!errors.password}
             helperText={errors.password}
           />
-
           {errors.server && (
             <FormHelperText error sx={{ mt: 2 }}>
               {errors.server}
@@ -163,13 +163,13 @@ export default function SignUpForm() {
             color="primary"
             size="large"
             style={{ marginTop: '10px' }}
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, textTransform: 'none', fontSize: 16 }}
             disabled={isLoading || Object.keys(errors).length > 0}
             loading={isLoading}
           >
             Зарегистрироваться
           </Button>
-        </form>
-      </Box>
+        </Box>
+      </Container>
     );
 }

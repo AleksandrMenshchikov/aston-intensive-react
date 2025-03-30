@@ -15,6 +15,10 @@ export function ButtonHistory() {
         textTransform: 'none',
         fontSize: 16,
         minHeight: 40,
+        '@media (max-width: 390px)': {
+          p: 0.8,
+          minWidth: 40,
+        },
       }}
     >
       <RestoreIcon fontSize="medium" />
@@ -22,7 +26,7 @@ export function ButtonHistory() {
         component="span"
         ml={1}
         sx={{
-          '@media (max-width: 522px)': {
+          '@media (max-width: 780px)': {
             display: 'none',
           },
         }}

@@ -15,6 +15,10 @@ export function ButtonSearch() {
         textTransform: 'none',
         minHeight: 40,
         display: location.pathname === Page.Search ? 'none' : 'inline-flex',
+        '@media (max-width: 390px)': {
+          p: 0.8,
+          minWidth: 40,
+        },
       }}
       onClick={() => navigate(Page.Search)}
     >
@@ -23,12 +27,12 @@ export function ButtonSearch() {
         component="span"
         sx={{
           pl: 1,
-          '@media (max-width: 840px)': {
+          '@media (max-width: 1000px)': {
             display: 'none',
           },
         }}
       >
-        Фильмы, сериалы, персоны
+        Поиск фильмов и сериалов
       </Box>
     </Button>
   );
