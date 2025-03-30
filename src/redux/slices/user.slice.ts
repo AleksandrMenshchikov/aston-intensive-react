@@ -154,6 +154,8 @@ const userReducer = userSlice.reducer;
 export default userReducer;
 
 export const selectUser = () => (state: RootState) => state.user.userData;
+export const selectUserFavorites = (state: RootState) =>
+  state.user.userData?.favorites;
 export const selectLoginStatus = () => (state: RootState) =>
   state.user.isLogged;
 export const selectUserDataStatus = () => (state: RootState) =>

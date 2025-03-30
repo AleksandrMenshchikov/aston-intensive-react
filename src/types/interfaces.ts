@@ -5,6 +5,8 @@ export interface IFilmsResponse {
   next?: string | null;
   entries: number;
   results?: {
+    //по этому id ищутся фильмы.
+    id: string;
     _id: string;
     primaryImage: {
       url: string;

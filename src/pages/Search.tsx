@@ -220,6 +220,7 @@ export default function Search() {
             {data.results.map((elem) => (
               <Card
                 key={elem._id}
+                filmId={elem.id}
                 imgSrc={
                   elem.primaryImage ? elem.primaryImage.url : ImageNotFound
                 }

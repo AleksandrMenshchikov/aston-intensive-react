@@ -14,6 +14,7 @@ const Signin = lazy(() => import('../pages/Signin'));
 const Signup = lazy(() => import('../pages/Signup'));
 const Search = lazy(() => import('../pages/Search'));
 const History = lazy(() => import('../pages/History'));
+const Favorites = lazy(() => import('../pages/Favorites'));
 
 export function App() {
   const isLogged = useSelector(selectLoginStatus());
@@ -35,6 +36,14 @@ export function App() {
           element={
             <ProtectedRoute isAuthenticated={isLogged}>
               <History />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={Page.Favorites}
+          element={
+            <ProtectedRoute isAuthenticated={isLogged}>
+              <Favorites />
             </ProtectedRoute>
           }
         />

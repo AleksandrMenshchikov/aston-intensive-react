@@ -7,8 +7,12 @@ import { ButtonSearch } from './ButtonSearch';
 import { Auth } from './Auth';
 import { LoggedIn } from './LoggedIn';
 import { ButtonHistory } from './ButtonHistory';
+import { ButtonFavorites } from './ButtonFavorites';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { selectLoginStatus } from '../redux/slices/user.slice';
 
 export function Layout() {
+  const isLogged = useAppSelector(selectLoginStatus());
   return (
     <>
       <AppBar position="fixed" sx={{ minHeight: 64, backgroundColor: '#fff' }}>
@@ -27,7 +31,12 @@ export function Layout() {
         >
           <Logo />
           <ButtonSearch />
-          <ButtonHistory />
+          {isLogged && (
+            <>
+              <ButtonHistory />
+              <ButtonFavorites />
+            </>
+          )}
           <Auth />
           <LoggedIn />
         </Box>
