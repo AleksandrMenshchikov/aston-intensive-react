@@ -35,6 +35,16 @@ export const filmApi = createApi({
         };
       },
     }),
+    getFilmsById: builder.query<IFilmsResponse, string>({
+      query: (id) => {
+        return {
+          url: `/titles/${id}/ratings`,
+          headers: {
+            'x-rapidapi-key': X_RAPIDAPI_KEY,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -42,4 +52,5 @@ export const {
   useGetRandomFilmsQuery,
   useLazyGetFilmsQuery,
   useGetFilmsByIdListQuery,
+  useGetFilmsByIdQuery,
 } = filmApi;
