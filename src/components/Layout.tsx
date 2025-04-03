@@ -1,19 +1,16 @@
 import React, { Suspense } from 'react';
-import { Link as RouterLink, Outlet, useNavigate } from 'react-router';
-import {
-  AppBar,
-  Box,
-  Button,
-  CircularProgress,
-  css,
-  Link,
-  Typography,
-} from '@mui/material';
-import Logo from '../assets/images/logo.png';
+import { Outlet } from 'react-router';
+import { AppBar, Box, LinearProgress } from '@mui/material';
+import { ErrorBoundary } from './ErrorBoundary';
+import { Logo } from './Logo';
+import { ButtonSearch } from './ButtonSearch';
+import { Auth } from './Auth';
+import { LoggedIn } from './LoggedIn';
+import { ButtonHistory } from './ButtonHistory';
+import { ButtonFavorites } from './ButtonFavorites';
+import { CompactAuth } from './CompactAuth';
 
 export function Layout() {
-  const navigate = useNavigate();
-
   return (
     <>
       <AppBar position="fixed" sx={{ minHeight: 64, backgroundColor: '#fff' }}>
@@ -30,87 +27,30 @@ export function Layout() {
             boxSizing: 'border-box',
           }}
         >
-          <Link to="/" component={RouterLink}>
-            <img
-              css={css({
-                maxWidth: 60,
-              })}
-              src={Logo}
-              alt="logo"
-            />
-          </Link>
-          <Typography
-            component="p"
-            color="textPrimary"
-            sx={{
-              fontSize: 30,
-              color: 'textPrimary',
-              '@media (max-width: 420px)': {
-                display: 'none',
-              },
-            }}
-          >
-            Movies
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                textTransform: 'none',
-                color: 'primary',
-                fontSize: 16,
-              }}
-              onClick={() => {
-                navigate('/signin');
-              }}
-            >
-              Вход
-            </Button>
-            <Button
-              variant="outlined"
-              sx={{
-                textTransform: 'none',
-                color: 'primary',
-                fontSize: 16,
-              }}
-              onClick={() => {
-                navigate('/signup');
-              }}
-            >
-              Регистрация
-            </Button>
-          </Box>
+          <Logo />
+          <ButtonSearch />
+          <ButtonHistory />
+          <ButtonFavorites />
+          <Auth />
+          <CompactAuth />
+          <LoggedIn />
         </Box>
       </AppBar>
-      <Suspense
-        fallback={
-          <Box
-            sx={{
-              maxWidth: 1200,
-              margin: '0 auto',
-              boxSizing: 'border-box',
-              minHeight: 'inherit',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        }
+      <Box
+        sx={{
+          padding: '90px 16px 30px',
+          maxWidth: 1200,
+          margin: '0 auto',
+          boxSizing: 'border-box',
+          minHeight: 'inherit',
+        }}
       >
-        <Box
-          sx={{
-            padding: '90px 16px 0',
-            maxWidth: 1200,
-            margin: '0 auto',
-            boxSizing: 'border-box',
-            minHeight: 'inherit',
-          }}
-        >
-          <Outlet />
-        </Box>
-      </Suspense>
+        <Suspense fallback={<LinearProgress sx={{ width: '100%' }} />}>
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </Suspense>
+      </Box>
     </>
   );
 }

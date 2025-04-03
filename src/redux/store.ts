@@ -1,8 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { filmApi } from './api/filmApi';
+import userReducer from './slices/user.slice';
+import { userApi } from './api/userApi';
 
 export const store = configureStore({
-  reducer: {},
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([]),
+  reducer: {
+    [filmApi.reducerPath]: filmApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
+    user: userReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat([filmApi.middleware, userApi.middleware]),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
