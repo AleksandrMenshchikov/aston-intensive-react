@@ -1,7 +1,7 @@
 import { Box, Button, css, Modal, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import Bookmark from './Bookmark';
-import Details from '../pages/Details';
+import Details from './Details';
 
 export function Card({
   imgSrc,
@@ -43,10 +43,6 @@ export function Card({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          cursor: 'pointer',
-          '&:hover': {
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-          },
         }}
       >
         <Bookmark filmId={filmId} />
