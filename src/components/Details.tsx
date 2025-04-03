@@ -9,7 +9,7 @@ import {
   Typography,
   Button,
 } from '@mui/material';
-import { useGetFilmsByIdQuery } from '../redux/api/filmApi';
+import { useGetFilmRatingByIdQuery } from '../redux/api/filmApi';
 
 interface RatingInfo {
   averageRating: number | null;
@@ -31,7 +31,7 @@ const Details: React.FC<DetailsProps> = ({
   filmId,
   onClose,
 }) => {
-  const { data, error, isLoading } = useGetFilmsByIdQuery(filmId);
+  const { data, error, isLoading } = useGetFilmRatingByIdQuery(filmId);
 
   if (isLoading) {
     return <LinearProgress sx={{ width: '100%' }} />;

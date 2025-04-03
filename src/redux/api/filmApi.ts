@@ -35,7 +35,7 @@ export const filmApi = createApi({
         };
       },
     }),
-    getFilmsById: builder.query<IFilmsResponse, string>({
+    getFilmRatingById: builder.query<IFilmsResponse, string>({
       query: (id) => {
         return {
           url: `/titles/${id}/ratings`,
@@ -52,5 +52,5 @@ export const {
   useGetRandomFilmsQuery,
   useLazyGetFilmsQuery,
   useGetFilmsByIdListQuery,
-  useGetFilmsByIdQuery,
+  useGetFilmRatingByIdQuery,
 } = filmApi;
