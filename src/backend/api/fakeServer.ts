@@ -59,10 +59,7 @@ const fakeServer: FakeServer = {
 
     if (!user)
       throw new Error(methodError + `Пользователь с id ${id} не найден`);
-    console.log('payload', payload);
-    console.log('user', user);
     const updatedUser = { ...user, ...payload };
-    console.log('updatedUser', updatedUser);
 
     const rawData = localStorage.getItem(this.USER_COLLECTION_NAME);
     if (!rawData)

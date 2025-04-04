@@ -62,7 +62,6 @@ export const signUp = createAsyncThunk<boolean, AuthPayload>(
       const userId = await thunkAPI
         .dispatch(userApi.endpoints.signUp.initiate([payload]))
         .unwrap();
-      console.log(userId);
       tokenService.setAuth(userId);
       return true;
     } catch (error) {
@@ -78,7 +77,6 @@ export const signIn = createAsyncThunk<boolean, AuthPayload>(
       const userId = await thunkAPI
         .dispatch(userApi.endpoints.signIn.initiate([payload]))
         .unwrap();
-      console.log(userId);
       tokenService.setAuth(userId);
       return true;
     } catch (error) {
