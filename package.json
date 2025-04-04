@@ -4,7 +4,7 @@
   "description": "react-app",
   "type": "module",
   "engines": {
-    "node": "=v22.14.0"
+    "node": "=v20.11.1"
   },
   "scripts": {
     "dev": "node checkNodeVersion.js && webpack serve --config webpack.dev.js",
