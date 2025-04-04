@@ -1,6 +1,5 @@
 import { User, UserId } from '../../types/User';
 import generateUniqId from '../../utils/generateUniqId';
-import { Film } from '../../types/Film';
 import { AuthPayload } from '../../redux/api/userApi';
 import { IHistoryRequest, IHistoryResponse } from '../../types/interfaces';
 
@@ -86,14 +85,6 @@ const fakeServer: FakeServer = {
 
     return result;
   },
-  async getFilmList(url: string, options: HTTPRequestOptions) {
-    //TODO Заменить на createApi или удалить
-    const response = await fetch(url, options);
-    const result = JSON.parse(await response.text());
-
-    if (!result.results) throw new Error('Список фильмов не получен с сервера');
-    return result.results as Film[];
-  },
   async saveHistory({ userId, ...data }) {
     const user = await this.getUserById(userId);
 
@@ -130,7 +121,6 @@ export type FakeServer = {
     payload: UserPayload;
   }): Promise<UserPayload>;
   getUserById(id: string): Promise<User>;
-  getFilmList(url: string, options: HTTPRequestOptions): Promise<Film[]>;
   saveHistory(data: IHistoryRequest): Promise<IHistoryResponse>;
   getUserHistoryById(userId: string): Promise<string[]>;
 };
