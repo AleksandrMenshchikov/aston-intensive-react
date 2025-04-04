@@ -8,7 +8,7 @@ import useAppDispatch from '../hooks/useAppDispatch';
 
 export function Auth() {
   const navigate = useNavigate();
-  const isLogged = useAppSelector(selectLoginStatus());
+  const isLogged = useAppSelector(selectLoginStatus);
   const dispatch = useAppDispatch();
 
   function handleSignin() {

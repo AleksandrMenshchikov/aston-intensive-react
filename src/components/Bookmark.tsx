@@ -7,7 +7,7 @@ import ButtonBookmark from './ButtonBookmark';
 
 export default function Bookmark({ filmId }: { filmId: string }) {
   const dispatch = useAppDispatch();
-  const userData = useAppSelector(selectUser());
+  const userData = useAppSelector(selectUser);
   const favorites = userData?.favorites;
   const [isMarked, setIsMarked] = useState(
     !!favorites?.find((id) => id === filmId)

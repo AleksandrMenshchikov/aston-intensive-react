@@ -9,9 +9,9 @@ import {
 import useAppDispatch from '../hooks/useAppDispatch';
 import { selectLoginStatus, signUp } from '../redux/slices/user.slice';
 import { useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
 import removeError from '../utils/removeErrors';
 import { Container } from './Container';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 interface SignUpFormValues {
   username: string;
@@ -32,8 +32,8 @@ export default function SignUpForm() {
     navigate('/', { replace: true });
   }, [navigate]);
   const dispatch = useAppDispatch();
-  const isLogged = useSelector(selectLoginStatus());
-  // Если залогинен то выгоняем на главную
+  const isLogged = useAppSelector(selectLoginStatus);
+
   useEffect(() => {
     if (isLogged) redirectToMainPage();
   }, [isLogged, redirectToMainPage]);
@@ -89,7 +89,6 @@ export default function SignUpForm() {
       if (result.payload === true) {
         alert('Вы успешно зарегистрированы');
         setFormValues({ username: '', email: '', password: '' });
-        // Чистим форму только в случае успешной авторизации.
         redirectToMainPage();
       }
       if (result.payload instanceof Error)
@@ -100,7 +99,7 @@ export default function SignUpForm() {
       setIsLoading(false);
     }
   };
-  // Рисуем только если пользователь не залогинен
+  
   if (!isLogged)
     return (
       <Container>

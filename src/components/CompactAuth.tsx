@@ -11,7 +11,7 @@ export function CompactAuth() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isLogged = useAppSelector(selectLoginStatus());
+  const isLogged = useAppSelector(selectLoginStatus);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

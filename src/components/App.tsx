@@ -5,10 +5,10 @@ import { Home } from '../pages/Home';
 import { NotFound } from '../pages/NotFound';
 import { Page } from '../types/enums';
 import { loadUserData, selectLoginStatus } from '../redux/slices/user.slice';
-import { useSelector } from 'react-redux';
 import useAppDispatch from '../hooks/useAppDispatch';
 import Logout from './Logout';
 import ProtectedRoute from './ProtectedRoute';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 const Signin = lazy(() => import('../pages/Signin'));
 const Signup = lazy(() => import('../pages/Signup'));
@@ -17,7 +17,7 @@ const History = lazy(() => import('../pages/History'));
 const Favorites = lazy(() => import('../pages/Favorites'));
 
 export function App() {
-  const isLogged = useSelector(selectLoginStatus());
+  const isLogged = useAppSelector(selectLoginStatus);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
