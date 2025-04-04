@@ -11,8 +11,8 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import useAppDispatch from '../hooks/useAppDispatch';
 
 export function LoggedIn() {
-  const data = useAppSelector(selectUser());
-  const isLogged = useAppSelector(selectLoginStatus());
+  const data = useAppSelector(selectUser);
+  const isLogged = useAppSelector(selectLoginStatus);
   const dispatch = useAppDispatch();
 
   function handleLogout() {

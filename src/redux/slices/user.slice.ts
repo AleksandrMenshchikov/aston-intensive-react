@@ -153,16 +153,16 @@ export const { setInitialState } = userSlice.actions;
 const userReducer = userSlice.reducer;
 export default userReducer;
 
-export const selectUser = () => (state: RootState) => state.user.userData;
+export const selectUser = (state: RootState) => state.user.userData;
 export const selectUserFavorites = (state: RootState) =>
   state.user.userData?.favorites;
-export const selectLoginStatus = () => (state: RootState) =>
+export const selectLoginStatus = (state: RootState) =>
   state.user.isLogged;
-export const selectUserDataStatus = () => (state: RootState) =>
+export const selectUserDataStatus = (state: RootState) =>
   state.user.dataIsLoaded;
-export const selectUserIsLoading = () => (state: RootState) =>
+export const selectUserIsLoading = (state: RootState) =>
   state.user.isLoading;
-export const selectUserHistory = () => (state: RootState) =>
+export const selectUserHistory = (state: RootState) =>
   state.user.userData?.history;
 
 export type UserState = {

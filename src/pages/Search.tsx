@@ -16,7 +16,7 @@ import { useLocation, useSearchParams } from 'react-router';
 import { IFilmsRequest } from '../types/interfaces';
 import useAppDispatch from '../hooks/useAppDispatch';
 import { saveHistory, selectUser } from '../redux/slices/user.slice';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 export default function Search() {
   const [getFilms, { error, data, isFetching, reset }] = useLazyGetFilmsQuery();
@@ -29,7 +29,7 @@ export default function Search() {
   const isFirstRender = useRef(true);
   const paginationCount = useRef(1);
   const dispatch = useAppDispatch();
-  const user = useSelector(selectUser());
+  const user = useAppSelector(selectUser);
   const location = useLocation();
 
   if (data && data.next) {

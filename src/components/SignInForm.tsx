@@ -3,12 +3,11 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import useAppDispatch from '../hooks/useAppDispatch';
 import { selectLoginStatus, signIn } from '../redux/slices/user.slice';
 import { useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
 import { AuthPayload } from '../redux/api/userApi';
 import { Container } from './Container';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 export default function Signin() {
-  // Заменил на существующий тип.
   const [formData, setFormData] = useState<AuthPayload>({
     email: '',
     password: '',
@@ -21,7 +20,7 @@ export default function Signin() {
     [navigate]
   );
   const redirectBack = () => navigate(-1);
-  const isLogged = useSelector(selectLoginStatus());
+  const isLogged = useAppSelector(selectLoginStatus);
 
   useEffect(() => {
     if (isLogged) redirectToMainPage();

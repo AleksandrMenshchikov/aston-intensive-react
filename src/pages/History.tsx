@@ -17,8 +17,8 @@ import { useNavigate } from 'react-router';
 import { EmptyHistory } from '../components/EmptyHistory';
 
 export default function History() {
-  const history = useAppSelector(selectUserHistory());
-  const isLoading = useAppSelector(selectUserIsLoading());
+  const history = useAppSelector(selectUserHistory);
+  const isLoading = useAppSelector(selectUserIsLoading);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isFirstRender = useRef(true);

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { logOut, selectLoginStatus } from '../redux/slices/user.slice';
 import useAppDispatch from '../hooks/useAppDispatch';
 import { useNavigate } from 'react-router';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 export default function Logout() {
-  const isLogged = useSelector(selectLoginStatus());
+  const isLogged = useAppSelector(selectLoginStatus);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isFirstReneder = useRef(true);
